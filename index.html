@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flash Cards</title>
+    <meta
+      name="description"
+      content="Flash Cards is a flashcard app for software engineering students to study HTML, CSS, JavaScript, coding concepts, and developer terminology."
+    />
+    <meta
+      name="keywords"
+      content="flashcards, coding flashcards, programming flashcards, software engineering, web development, HTML, CSS, JavaScript, frontend development, coding study app, developer study tool, learn to code, coding terms, programming concepts, syntax, coding practice"
+    />
+    <meta name="author" content="Paul Barrow-Wilkerson" />
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/vendor/normalize.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <script src="./assets/js/index.js" type="module"></script>
+  </head>
+  <body class="page">
+    <header class="header">
+      <h1 class="header__title">
+        <a href="#home" class="header__link">Flash Cards</a>
+      </h1>
+      <nav class="nav">
+        <ul class="nav__links">
+          <li><a class="nav__link" href="#home">My Decks</a></li>
+          <li><a class="nav__link" href="#about">About</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="page__main-content">
+      <!-- Home Section -->
+      <section id="home" class="decks page__section">
+        <h2 class="decks__title">My Decks</h2>
+        <ul class="decks__list">
+          <!-- This is where Decks Template Goes -->
+        </ul>
+        <button type="button" class="decks__new-deck-btn">+ New Deck</button>
+      </section>
+      <!-- Carousel Section -->
+      <section
+        id="carousel"
+        class="carousel page__section page__section_hidden"
+      >
+        <h2 class="carousel__title">HTML Tags Deck &middot; 1/10</h2>
+        <div class="carousel__row">
+          <button
+            class="carousel__btn carousel__btn_type_left carousel__btn_disabled"
+            type="button"
+            aria-label="Previous Card"
+          ></button>
+          <div class="carousel__card carousel__card_color_green">
+            <p class="carousel__card-text">&lt;body&gt;&lt;/body&gt;</p>
+          </div>
+          <button
+            class="carousel__btn carousel__btn_type_right"
+            type="button"
+            aria-label="Next Card"
+          ></button>
+        </div>
+        <button
+          class="carousel__btn carousel__btn_type_flip"
+          type="button"
+          aria-label="Flip Card"
+        ></button>
+      </section>
+      <!-- Not Found Section -->
+      <section
+        id="not-found"
+        class="not-found page__section page__section_hidden"
+      >
+        <h2 class="not-found__status-code">404</h2>
+        <p class="not-found__text">Sorry, nothing found!</p>
+      </section>
+
+      <!-- Decks Template -->
+      <template id="deck-template">
+        <li class="deck deck_color_green">
+          <a href="#" class="deck__link" aria-label="Open Deck"></a>
+          <h3 class="deck__title"></h3>
+          <div class="deck__row">
+            <span class="deck__count"></span>
+            <button
+              type="button"
+              aria-label="Delete this deck"
+              class="deck__delete-btn"
+            ></button>
+          </div>
+        </li>
+      </template>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer__text">&copy; 2026 Paul Barrow-Wilkerson</p>
+    </footer>
+  </body>
+</html>
