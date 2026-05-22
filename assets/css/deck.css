@@ -1,0 +1,76 @@
+.deck {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 325px;
+  height: 205px;
+  padding: 20px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.deck__title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.deck__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deck__count {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.deck__delete-btn {
+  height: 24px;
+  width: 24px;
+  background: transparent url("../images/delete.svg") no-repeat center / contain;
+  border: none;
+  opacity: 50%;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  z-index: 2;
+}
+
+.deck__delete-btn:hover {
+  opacity: 100%;
+}
+
+.deck__link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.deck_color_green {
+  background-color: #64d583;
+}
+
+.deck_color_blue {
+  background-color: #91a8f9;
+}
+
+.deck_color_pink {
+  background-color: #ee92d7;
+}
+
+.deck_color_purple {
+  background-color: #aa8ef0;
+}
+
+.deck_color_orange {
+  background-color: #ee955e;
+}
+
+.deck_color_yellow {
+  background-color: #f5d770;
+}

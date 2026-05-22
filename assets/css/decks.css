@@ -1,0 +1,38 @@
+.decks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.decks__title {
+  width: 100%;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+  font-size: 40px;
+}
+
+.decks__list {
+  display: contents;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.decks__new-deck-btn {
+  background-color: #d9d9d9;
+  width: 325px;
+  height: 205px;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1a1a1a80;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.decks__new-deck-btn:hover {
+  background-color: #c5c5c5;
+  color: #1a1a1a;
+}
