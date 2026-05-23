@@ -27,13 +27,13 @@ function renderHomeView() {
   showSection(homeSection);
 
   const deckTemplateEl = document.querySelector("#deck-template");
-  const deckContainerEl = document.querySelector(".decks__list");
+  const deckContainerEl = document.querySelector(".gallery__list");
   deckContainerEl.innerHTML = "";
 
   // Deck template
   function createDeckEl(deck) {
     const deckEl = deckTemplateEl.content
-      .querySelector(".deck")
+      .querySelector(".card")
       .cloneNode(true);
 
     // Deck color
@@ -41,24 +41,24 @@ function renderHomeView() {
 
     if (deckColor && deckColor !== "default") {
       removeColorClasses(deckEl);
-      deckEl.classList.add(`deck_color_${deckColor}`);
+      deckEl.classList.add(`card_color_${deckColor}`);
     }
 
     // Deck text
-    const deckTitleEl = deckEl.querySelector(".deck__title");
+    const deckTitleEl = deckEl.querySelector(".card__title");
     deckTitleEl.textContent = deck.name;
 
-    const deckCountEl = deckEl.querySelector(".deck__count");
+    const deckCountEl = deckEl.querySelector(".card__count");
     deckCountEl.textContent = `${deck.cards.length} cards`;
 
     // Deck delete button
-    const deleteBtn = deckEl.querySelector(".deck__delete-btn");
+    const deleteBtn = deckEl.querySelector(".card__delete-btn");
     deleteBtn.addEventListener("click", () => {
       deckEl.remove();
     });
 
     // Deck link
-    const deckLinkEl = deckEl.querySelector(".deck__link");
+    const deckLinkEl = deckEl.querySelector(".card__link");
     deckLinkEl.href = `#carousel/${deck.id}`;
 
     return deckEl;
