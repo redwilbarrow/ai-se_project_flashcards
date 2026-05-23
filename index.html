@@ -44,6 +44,22 @@
         </ul>
         <button type="button" class="gallery__new-card-btn">+ New Deck</button>
       </section>
+
+      <!-- Deck View Section -->
+      <section
+        id="deck-view"
+        class="gallery page__section page__section_hidden"
+      >
+        <div class="gallery__wrapping-row">
+          <h2 class="gallery__title"></h2>
+          <button type="button" class="gallery__practice-btn">Practice</button>
+        </div>
+        <ul class="gallery__list">
+          <!-- This is where Decks Template Goes -->
+        </ul>
+        <button type="button" class="gallery__new-card-btn">+ New Card</button>
+      </section>
+
       <!-- Carousel Section -->
       <section
         id="carousel"
@@ -71,6 +87,7 @@
           aria-label="Flip Card"
         ></button>
       </section>
+
       <!-- Not Found Section -->
       <section
         id="not-found"
@@ -80,13 +97,32 @@
         <p class="not-found__text">Sorry, nothing found!</p>
       </section>
 
-      <!-- Decks Template -->
+      <!-- Deck Template -->
       <template id="deck-template">
         <li class="card card_color_green">
           <a href="#" class="card__link" aria-label="Open Deck"></a>
           <h3 class="card__title"></h3>
           <div class="card__row">
             <span class="card__count"></span>
+            <button
+              type="button"
+              aria-label="Delete this deck"
+              class="card__delete-btn"
+            ></button>
+          </div>
+        </li>
+      </template>
+
+      <!-- Flashcard Template -->
+      <template id="flashcard-template">
+        <li class="card card_color_green">
+          <h3 class="card__title"></h3>
+          <div class="card__row">
+            <button
+              type="button"
+              aria-label="Flip this Card"
+              class="card__flip-btn"
+            ></button>
             <button
               type="button"
               aria-label="Delete this deck"
