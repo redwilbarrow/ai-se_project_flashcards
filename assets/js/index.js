@@ -1,8 +1,10 @@
 import { decks, getDeckByID } from "./decks.js";
 import { hexToString, removeColorClasses } from "./colorMap.js";
+import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
 
 const homeSection = document.querySelector("#home");
+const deckViewSection = document.querySelector("#deck-view");
 const carouselSection = document.querySelector("#carousel");
 const notFoundSection = document.querySelector("#not-found");
 const mainContentEl = document.querySelector(".page__main-content");
@@ -16,6 +18,7 @@ const mainContentEl = document.querySelector(".page__main-content");
 
 function showSection(activeSection) {
   homeSection.classList.add("page__section_hidden");
+  deckViewSection.classList.add("page__section_hidden");
   carouselSection.classList.add("page__section_hidden");
   notFoundSection.classList.add("page__section_hidden");
 
@@ -27,7 +30,7 @@ function renderHomeView() {
   showSection(homeSection);
 
   const deckTemplateEl = document.querySelector("#deck-template");
-  const deckContainerEl = document.querySelector(".gallery__list");
+  const deckContainerEl = homeSection.querySelector(".gallery__list");
   deckContainerEl.innerHTML = "";
 
   // Deck template
@@ -59,7 +62,7 @@ function renderHomeView() {
 
     // Deck link
     const deckLinkEl = deckEl.querySelector(".card__link");
-    deckLinkEl.href = `#carousel/${deck.id}`;
+    deckLinkEl.href = `#deck/${deck.id}`;
 
     return deckEl;
   }
@@ -80,6 +83,7 @@ function renderNotFoundView() {
 // Main router
 function router() {
   const hash = window.location.hash.slice(1) || "home";
+  const isDeckView = hash.startsWith("deck/");
   const isCarouselView = hash.startsWith("carousel/");
 
   mainContentEl.classList.toggle(
@@ -89,6 +93,17 @@ function router() {
 
   if (hash === "home" || hash === "") {
     renderHomeView();
+  } else if (isDeckView) {
+    const deckID = hash.split("/")[1];
+    const deck = getDeckByID(deckID);
+
+    if (!deck) {
+      renderNotFoundView();
+      return;
+    }
+
+    showSection(deckViewSection);
+    renderDeckView(deck);
   } else if (isCarouselView) {
     const deckID = hash.split("/")[1];
     const deck = getDeckByID(deckID);
