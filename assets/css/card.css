@@ -69,7 +69,8 @@
   z-index: 1;
 }
 
-.card_color_green {
+.card_color_green,
+.card_color_default {
   background-color: #64d583;
 }
 

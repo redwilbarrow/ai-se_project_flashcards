@@ -41,7 +41,8 @@
   margin: 0;
 }
 
-.carousel__card_color_green {
+.carousel__card_color_green,
+.carousel__card_color_default {
   background-color: #64d583;
 }
 
