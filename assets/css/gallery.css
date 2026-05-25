@@ -24,8 +24,6 @@
 }
 
 .gallery__practice-btn {
-  position: relative;
-  overflow: hidden;
   background: #1a1a1a;
   padding: 12px 16px 14px;
   border-radius: 8px;
@@ -33,27 +31,13 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 1;
-  letter-spacing: 0;
   border: none;
   cursor: pointer;
 }
 
-.gallery__practice-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 55.81%,
-    rgba(255, 255, 255, 0.3) 100%
-  );
-  opacity: 0;
-  transition: opacity 0.1s ease-in-out;
-  pointer-events: none;
-}
-
-.gallery__practice-btn:hover::after {
-  opacity: 1;
+.gallery__practice-btn:hover {
+  background-image: linear-gradient(to top, #595959 0%, #1a1a1a 48%);
+  color: #fff;
 }
 
 .gallery__list {

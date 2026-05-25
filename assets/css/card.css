@@ -47,7 +47,6 @@
   padding: 0;
   outline: none;
   z-index: 2;
-  transition: opacity 0.1s ease-in-out;
 }
 
 .card__flip-btn {

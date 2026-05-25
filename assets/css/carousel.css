@@ -95,7 +95,6 @@
   background-position: center;
   background-image: url("../images/left.svg");
   opacity: 50%;
-  transition: opacity 0.1s ease-in-out;
 }
 
 .carousel__btn_type_right::before {
@@ -107,7 +106,6 @@
   background-position: center;
   background-image: url("../images/right.svg");
   opacity: 50%;
-  transition: opacity 0.1s ease-in-out;
 }
 
 .carousel__btn_type_flip::before {
@@ -119,7 +117,6 @@
   background-position: center;
   background-image: url("../images/flip.svg");
   opacity: 50%;
-  transition: opacity 0.1s ease-in-out;
 }
 
 .carousel__btn:hover::before {
