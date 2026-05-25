@@ -21,4 +21,8 @@
 }
 
 @media screen and (max-width: 600px) {
+  .nav__links {
+    margin: 4px 8px;
+    gap: 24px;
+  }
 }

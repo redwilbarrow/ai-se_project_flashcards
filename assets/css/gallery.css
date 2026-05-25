@@ -1,7 +1,6 @@
 .gallery {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-direction: column;
 }
 
 .gallery__title {
@@ -11,11 +10,11 @@
   font-size: 40px;
 }
 
-.gallery__wrapping-row .gallery__title {
+.gallery__top-row .gallery__title {
   margin-bottom: 0;
 }
 
-.gallery__wrapping-row {
+.gallery__top-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,6 +37,14 @@
 .gallery__practice-btn:hover {
   background-image: linear-gradient(to top, #595959 0%, #1a1a1a 48%);
   color: #fff;
+}
+
+.gallery__grid-wrapper {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fill, minmax(min(325px, 100%), 353px));
+  margin-top: 20px;
+  gap: 20px;
 }
 
 .gallery__list {
@@ -70,8 +77,20 @@
   color: #1a1a1a;
 }
 
+@media screen and (min-width: 800px) {
+  .gallery__grid-wrapper {
+    grid-template-columns: repeat(auto-fill, 325px);
+  }
+}
+
 @media screen and (max-width: 600px) {
   .gallery__title {
+    font-size: 32px;
     margin: 0;
+    letter-spacing: 0.025em;
+  }
+
+  .gallery__practice-btn {
+    display: none;
   }
 }

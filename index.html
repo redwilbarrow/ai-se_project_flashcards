@@ -39,10 +39,14 @@
       <!-- Home Section -->
       <section id="home" class="gallery page__section">
         <h2 class="gallery__title">My Decks</h2>
-        <ul class="gallery__list">
-          <!-- This is where Decks Template Goes -->
-        </ul>
-        <button type="button" class="gallery__new-card-btn">+ New Deck</button>
+        <div class="gallery__grid-wrapper">
+          <ul class="gallery__list">
+            <!-- This is where Decks Template Goes -->
+          </ul>
+          <button type="button" class="gallery__new-card-btn">
+            + New Deck
+          </button>
+        </div>
       </section>
 
       <!-- Deck View Section -->
@@ -50,14 +54,18 @@
         id="deck-view"
         class="gallery page__section page__section_hidden"
       >
-        <div class="gallery__wrapping-row">
+        <div class="gallery__top-row">
           <h2 class="gallery__title"></h2>
           <button type="button" class="gallery__practice-btn">Practice</button>
         </div>
-        <ul class="gallery__list">
-          <!-- This is where Flashcards Template Goes -->
-        </ul>
-        <button type="button" class="gallery__new-card-btn">+ New Card</button>
+        <div class="gallery__grid-wrapper">
+          <ul class="gallery__list">
+            <!-- This is where Flashcards Template Goes -->
+          </ul>
+          <button type="button" class="gallery__new-card-btn">
+            + New Card
+          </button>
+        </div>
       </section>
 
       <!-- Carousel Section -->
