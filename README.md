@@ -10,6 +10,7 @@ A browser-based flashcard app for studying software engineering concepts. Built 
 - Remove decks from the visible gallery
 - View a not-found page for invalid routes
 - Modular JavaScript structure with template-based rendering
+- Responsive design optimized for mobile and desktop screens
 
 ## Technologies Used
 
