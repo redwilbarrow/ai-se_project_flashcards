@@ -21,4 +21,4 @@ A browser-based flashcard app for studying software engineering concepts. Built 
 
 ## Deployed Site
 
-Check out the live app: [Flashcard App](https://redwilbarrow.github.io/ai-se_project_flashcards/#home) on GitHub Pages.
+Check out the live app: [Flashcard App](https://redwilbarrow.github.io/ai-se_project_flashcards) on GitHub Pages.

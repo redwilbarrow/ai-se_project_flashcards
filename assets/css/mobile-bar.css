@@ -53,6 +53,7 @@
 
   .gallery__practice-btn {
     right: max(20px, calc((100% - 353px) / 2));
+    left: auto;
     width: calc(50% - 26px);
     max-width: 170.5px;
   }
