@@ -8,6 +8,7 @@
   margin: 0 0 20px 0;
   font-weight: 700;
   font-size: 40px;
+  letter-spacing: 0.025em;
 }
 
 .gallery__top-row .gallery__title {
@@ -56,7 +57,7 @@
 
 .gallery__new-card-btn {
   background-color: #d9d9d9;
-  width: 325px;
+  width: 100%;
   height: 205px;
   padding: 20px;
   font-size: 24px;
@@ -84,13 +85,10 @@
 }
 
 @media screen and (max-width: 600px) {
-  .gallery__title {
+  .gallery__title,
+  .gallery__top-row {
     font-size: 32px;
-    margin: 0;
     letter-spacing: 0.025em;
-  }
-
-  .gallery__practice-btn {
-    display: none;
+    margin-bottom: 0;
   }
 }
