@@ -1,0 +1,70 @@
+@media screen and (max-width: 805px) {
+  .page::after {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    /* I couldn't get it to quite match the Figma design just using 
+    *  linear-gradient, so I did some digging and found that I could 
+    *  replicate the Figma design using backdrop-filter, and mask-image */
+    backdrop-filter: blur(15px);
+    -webkit-mask-image: linear-gradient(
+      to top,
+      black 0%,
+      black 70%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(to top, black 0%, black 70%, transparent 100%);
+    background: linear-gradient(
+      to top,
+      #ececec 0%,
+      #ececec 70%,
+      rgba(236, 236, 236, 0) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .gallery__new-card-btn,
+  .gallery__practice-btn {
+    position: fixed;
+    bottom: 76px;
+    padding: 12px 0 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    aspect-ratio: auto;
+    height: auto;
+    z-index: 3;
+  }
+
+  .gallery__new-card-btn {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: calc(100% - 40px);
+    max-width: 353px;
+  }
+
+  .gallery__practice-btn {
+    right: max(20px, calc((100% - 353px) / 2));
+    width: calc(50% - 26px);
+    max-width: 170.5px;
+  }
+
+  .gallery__new-card-btn_location_deck-view {
+    left: max(20px, calc((100% - 353px) / 2));
+    right: auto;
+    margin: 0;
+    width: calc(50% - 26px);
+    max-width: 170.5px;
+    background-color: #d9d9d9;
+    box-shadow: none;
+    color: #1a1a1a80;
+  }
+}
