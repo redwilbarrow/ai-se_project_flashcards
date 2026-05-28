@@ -9,6 +9,7 @@
     /* I couldn't get it to quite match the Figma design just using 
     *  linear-gradient, so I did some digging and found that I could 
     *  replicate the Figma design using backdrop-filter, and mask-image */
+    -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     -webkit-mask-image: linear-gradient(
       to top,
@@ -25,6 +26,10 @@
     );
     pointer-events: none;
     z-index: 2;
+  }
+
+  .page_no-mobile-bar::after {
+    display: none;
   }
 
   .gallery__new-card-btn,

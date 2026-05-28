@@ -7,6 +7,7 @@ const homeSection = document.querySelector("#home");
 const deckViewSection = document.querySelector("#deck-view");
 const carouselSection = document.querySelector("#carousel");
 const notFoundSection = document.querySelector("#not-found");
+const pageEl = document.querySelector(".page");
 const mainContentEl = document.querySelector(".page__main-content");
 
 /* I decided to create a single function to manage the visibility of
@@ -23,6 +24,18 @@ function showSection(activeSection) {
   notFoundSection.classList.add("page__section_hidden");
 
   activeSection.classList.remove("page__section_hidden");
+
+  const showMobileBar =
+    activeSection === homeSection || activeSection === deckViewSection;
+
+  showMobileBar
+    ? pageEl.classList.remove("page_no-mobile-bar")
+    : pageEl.classList.add("page_no-mobile-bar");
+
+  mainContentEl.classList.toggle(
+    "page__main-content_page_carousel",
+    activeSection === carouselSection,
+  );
 }
 
 // Home view
@@ -85,11 +98,6 @@ function router() {
   const hash = window.location.hash.slice(1) || "home";
   const isDeckView = hash.startsWith("deck/");
   const isCarouselView = hash.startsWith("carousel/");
-
-  mainContentEl.classList.toggle(
-    "page__main-content_page_carousel",
-    isCarouselView,
-  );
 
   if (hash === "home" || hash === "") {
     renderHomeView();

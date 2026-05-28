@@ -44,4 +44,8 @@ html {
   .page__main-content {
     margin-top: 40px;
   }
+
+  .page__main-content_page_carousel {
+    margin-top: 122px;
+  }
 }

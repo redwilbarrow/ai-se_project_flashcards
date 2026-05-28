@@ -59,9 +59,11 @@ function renderCarouselView(deck) {
     if (showingQuestion) {
       cardTextEl.textContent = currentCard.question;
       cardEl.classList.remove("carousel__card_color_white");
+      cardTextEl.classList.remove("carousel__card-text_showing-answer");
     } else {
       cardTextEl.textContent = currentCard.answer;
       cardEl.classList.add("carousel__card_color_white");
+      cardTextEl.classList.add("carousel__card-text_showing-answer");
     }
 
     updateArrows();
