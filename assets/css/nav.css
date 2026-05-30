@@ -26,3 +26,9 @@
     gap: 24px;
   }
 }
+
+@media screen and (max-width: 360px) {
+  .nav__links {
+    gap: 14px;
+  }
+}

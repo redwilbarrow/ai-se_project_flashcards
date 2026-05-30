@@ -96,3 +96,9 @@
 .card_color_white {
   background-color: #fff;
 }
+
+@media screen and (max-width: 600px) {
+  .card {
+    aspect-ratio: 353 / 205;
+  }
+}

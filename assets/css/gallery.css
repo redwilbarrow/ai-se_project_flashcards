@@ -8,7 +8,7 @@
   margin: 0 0 20px 0;
   font-weight: 700;
   font-size: 40px;
-  letter-spacing: 0.025em;
+  letter-spacing: 0;
 }
 
 .gallery__top-row .gallery__title {
@@ -88,7 +88,6 @@
   .gallery__title,
   .gallery__top-row {
     font-size: 32px;
-    letter-spacing: 0.025em;
     margin-bottom: 0;
   }
 }
