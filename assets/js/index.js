@@ -11,16 +11,23 @@ const notFoundSection = document.querySelector("#not-found");
 const pageEl = document.querySelector(".page");
 const mainContentEl = document.querySelector(".page__main-content");
 
-function showSection(activeSection) {
+/* I originally built this showView helper during a previous submission to avoid
+ * repeating view show/hide logic in every render function. I kept it for this
+ * submission instead of replacing it with the optional display-based version
+ * from the current instructions because this version follows the same DRY idea,
+ * uses the project's page__section_hidden class modifier, and also handles
+ * route-specific layout changes like the mobile bar and carousel view styling.
+ */
+function showView(activeView) {
   homeSection.classList.add("page__section_hidden");
   deckViewSection.classList.add("page__section_hidden");
   carouselSection.classList.add("page__section_hidden");
   notFoundSection.classList.add("page__section_hidden");
 
-  activeSection.classList.remove("page__section_hidden");
+  activeView.classList.remove("page__section_hidden");
 
   const showMobileBar =
-    activeSection === homeSection || activeSection === deckViewSection;
+    activeView === homeSection || activeView === deckViewSection;
 
   showMobileBar
     ? pageEl.classList.remove("page_no-mobile-bar")
@@ -28,14 +35,12 @@ function showSection(activeSection) {
 
   mainContentEl.classList.toggle(
     "page__main-content_page_carousel",
-    activeSection === carouselSection,
+    activeView === carouselSection,
   );
 }
 
 // Home view
 function renderHomeView() {
-  showSection(homeSection);
-
   const deckTemplateEl = document.querySelector("#deck-template");
   const deckContainerEl = homeSection.querySelector(".gallery__list");
   deckContainerEl.innerHTML = "";
@@ -84,11 +89,6 @@ function renderHomeView() {
   decks.forEach(renderDeckEl);
 }
 
-// Not found view
-function renderNotFoundView() {
-  showSection(notFoundSection);
-}
-
 // Main router
 function router() {
   const hash = window.location.hash.slice(1) || "home";
@@ -96,17 +96,18 @@ function router() {
   const isCarouselView = hash.startsWith("carousel/");
 
   if (hash === "home" || hash === "") {
+    showView(homeSection);
     renderHomeView();
   } else if (isDeckView) {
     const deckID = hash.split("/")[1];
     const deck = getDeckByID(deckID);
 
     if (!deck) {
-      renderNotFoundView();
+      showView(notFoundSection);
       return;
     }
 
-    showSection(deckViewSection);
+    showView(deckViewSection);
     renderDeckView(deck);
   } else if (isCarouselView) {
     const deckID = hash.split("/")[1];
@@ -114,14 +115,14 @@ function router() {
 
     // Handle missing carousel decks.
     if (!deck) {
-      renderNotFoundView();
+      showView(notFoundSection);
       return;
     }
 
-    showSection(carouselSection);
+    showView(carouselSection);
     renderCarouselView(deck);
   } else {
-    renderNotFoundView();
+    showView(notFoundSection);
   }
 }
 
