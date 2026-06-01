@@ -36,11 +36,11 @@
   .gallery__practice-btn {
     position: fixed;
     bottom: 75px;
-    padding: 14px 0 12px;
+    padding: 12px 0 14px;
     border-radius: 8px;
     font-size: 18px;
     font-weight: 500;
-    line-height: 100%;
+    line-height: 1;
     letter-spacing: 0;
     background-color: #1a1a1a;
     color: #ffffff;

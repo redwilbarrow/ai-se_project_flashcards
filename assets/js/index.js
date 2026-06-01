@@ -2,6 +2,7 @@ import { decks, getDeckByID } from "./decks.js";
 import { hexToString, removeColorClasses } from "./colorMap.js";
 import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
+import { openConfirmationModal } from "./modal.js";
 
 const homeSection = document.querySelector("#home");
 const deckViewSection = document.querySelector("#deck-view");
@@ -9,13 +10,6 @@ const carouselSection = document.querySelector("#carousel");
 const notFoundSection = document.querySelector("#not-found");
 const pageEl = document.querySelector(".page");
 const mainContentEl = document.querySelector(".page__main-content");
-
-/* I decided to create a single function to manage the visibility of
- *  each section. I figured it would be easier to hide all sections
- *  first and then show only the section passed into the function.
- *  I was trying to apply the DRY concept. I know this hasn't really
- *  been taught yet, but it seems like a good practice.
- */
 
 function showSection(activeSection) {
   homeSection.classList.add("page__section_hidden");
@@ -70,7 +64,9 @@ function renderHomeView() {
     // Deck delete button
     const deleteBtn = deckEl.querySelector(".card__delete-btn");
     deleteBtn.addEventListener("click", () => {
-      deckEl.remove();
+      openConfirmationModal("deck", () => {
+        deckEl.remove();
+      });
     });
 
     // Deck link

@@ -1,4 +1,6 @@
 import { hexToString, removeColorClasses } from "./colorMap.js";
+import { openConfirmationModal } from "./modal.js";
+
 const deckViewSection = document.querySelector("#deck-view");
 const deckTitleEl = deckViewSection.querySelector(".gallery__title");
 const practiceBtn = deckViewSection.querySelector(".gallery__practice-btn");
@@ -59,7 +61,9 @@ function renderDeckView(deck) {
     const deleteBtn = flashcardEl.querySelector(".card__delete-btn");
 
     deleteBtn.addEventListener("click", () => {
-      flashcardEl.remove();
+      openConfirmationModal("card", () => {
+        flashcardEl.remove();
+      });
     });
 
     updateDisplay();
