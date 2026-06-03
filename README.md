@@ -90,6 +90,9 @@ Some improvements I would like to add in the future include:
 - Improving keyboard navigation for studying cards
 - Adding more flashcard categories
 
+## Project Pitch Video
+Check out [this video](https://drive.google.com/file/d/1SD6kdLz23dkbx98MdCP2n3ZD2tIzIIrC/view?usp=sharing), where I describe my project and some challenges I faced while building it.
+
 ## Author
 
 Built by Paul Barrow-Wilkerson as part of TripleTen’s AI-Assisted Software Engineering program.
