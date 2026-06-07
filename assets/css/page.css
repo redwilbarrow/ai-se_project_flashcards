@@ -45,6 +45,15 @@
     margin-top: 122px;
   }
 
+  .page.page_footer-fixed {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .page.page_footer-fixed .page__main-content {
+    margin-bottom: 0;
+  }
+
   .page.page_footer-fixed .footer {
     position: fixed;
     left: 20px;

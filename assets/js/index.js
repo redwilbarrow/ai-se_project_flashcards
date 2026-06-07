@@ -41,7 +41,10 @@ function showView(activeView) {
     activeView === carouselSection,
   );
 
-  pageEl.classList.toggle("page_footer-fixed", activeView === newDeckSection);
+  pageEl.classList.toggle(
+    "page_footer-fixed",
+    activeView === newDeckSection || activeView === carouselSection,
+  );
 }
 
 // Home view

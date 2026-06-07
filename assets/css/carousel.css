@@ -162,7 +162,7 @@
   .carousel__card {
     width: 100%;
     max-width: 440px;
-    height: 420px;
+    height: min(420px, calc(100dvh - 332px));
   }
 
   .carousel__card-text {
