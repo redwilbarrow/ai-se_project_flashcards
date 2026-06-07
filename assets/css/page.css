@@ -26,6 +26,12 @@
   display: none;
 }
 
+@media screen and (max-width: 805px) {
+  .page_no-mobile-bar::after {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 600px) {
   .page {
     padding-inline: 20px;
@@ -37,5 +43,12 @@
 
   .page__main-content_page_carousel {
     margin-top: 122px;
+  }
+
+  .page.page_footer-fixed .footer {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 3;
   }
 }

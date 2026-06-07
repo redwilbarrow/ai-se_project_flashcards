@@ -28,10 +28,6 @@
     z-index: 2;
   }
 
-  .page_no-mobile-bar::after {
-    display: none;
-  }
-
   .gallery__new-card-btn,
   .gallery__practice-btn {
     position: fixed;
@@ -45,7 +41,7 @@
     background-color: #1a1a1a;
     color: #ffffff;
     aspect-ratio: auto;
-    height: auto;
+    height: 44px;
     z-index: 3;
   }
 

@@ -5,11 +5,13 @@ import { renderCarouselView } from "./carousel.js";
 import { openConfirmationModal } from "./modal.js";
 
 const homeSection = document.querySelector("#home");
+const newDeckSection = document.querySelector("#new-deck-view");
 const deckViewSection = document.querySelector("#deck-view");
 const carouselSection = document.querySelector("#carousel");
 const notFoundSection = document.querySelector("#not-found");
 const pageEl = document.querySelector(".page");
 const mainContentEl = document.querySelector(".page__main-content");
+const newDeckBtn = document.querySelector("#home .gallery__new-card-btn");
 
 /* I originally built this showView helper during a previous submission to avoid
  * repeating view show/hide logic in every render function. I kept it for this
@@ -20,6 +22,7 @@ const mainContentEl = document.querySelector(".page__main-content");
  */
 function showView(activeView) {
   homeSection.classList.add("page__section_hidden");
+  newDeckSection.classList.add("page__section_hidden");
   deckViewSection.classList.add("page__section_hidden");
   carouselSection.classList.add("page__section_hidden");
   notFoundSection.classList.add("page__section_hidden");
@@ -37,6 +40,8 @@ function showView(activeView) {
     "page__main-content_page_carousel",
     activeView === carouselSection,
   );
+
+  pageEl.classList.toggle("page_footer-fixed", activeView === newDeckSection);
 }
 
 // Home view
@@ -89,15 +94,22 @@ function renderHomeView() {
   decks.forEach(renderDeckEl);
 }
 
+newDeckBtn.addEventListener("click", () => {
+  window.location.hash = "#new-deck-view";
+});
+
 // Main router
 function router() {
   const hash = window.location.hash.slice(1) || "home";
+  const isNewDeckView = hash === "new-deck-view";
   const isDeckView = hash.startsWith("deck/");
   const isCarouselView = hash.startsWith("carousel/");
 
   if (hash === "home" || hash === "") {
     showView(homeSection);
     renderHomeView();
+  } else if (isNewDeckView) {
+    showView(newDeckSection);
   } else if (isDeckView) {
     const deckID = hash.split("/")[1];
     const deck = getDeckByID(deckID);

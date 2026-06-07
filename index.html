@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./assets/css/index.css" />
@@ -47,6 +47,92 @@
             + New Deck
           </button>
         </div>
+      </section>
+
+      <!-- New Deck View Section -->
+      <section
+        id="new-deck-view"
+        class="new-deck-view page__section page__section_hidden"
+      >
+        <h2 class="new-deck-view__title">New Deck</h2>
+        <form class="new-deck-view__form" id="new-deck-form">
+          <fieldset class="new-deck-view__color-picker">
+            <legend class="new-deck-view__legend">Pick the deck color</legend>
+            <label class="new-deck-view__color-label" for="green">
+              <input
+                class="new-deck-view__color-input new-deck-view__color-input_color_green"
+                aria-label="Green"
+                name="color"
+                id="green"
+                value="#64D583"
+                type="radio"
+                checked
+              />
+            </label>
+            <label class="new-deck-view__color-label" for="blue">
+              <input
+                class="new-deck-view__color-input new-deck-view__color-input_color_blue"
+                aria-label="Blue"
+                name="color"
+                id="blue"
+                value="#91A8F9"
+                type="radio"
+              />
+            </label>
+            <label class="new-deck-view__color-label" for="purple">
+              <input
+                class="new-deck-view__color-input new-deck-view__color-input_color_purple"
+                aria-label="Purple"
+                name="color"
+                id="purple"
+                value="#AA8EF0"
+                type="radio"
+              />
+            </label>
+            <label class="new-deck-view__color-label" for="pink">
+              <input
+                class="new-deck-view__color-input new-deck-view__color-input_color_pink"
+                aria-label="Pink"
+                name="color"
+                id="pink"
+                value="#EE92D7"
+                type="radio"
+              />
+            </label>
+            <label class="new-deck-view__color-label" for="orange">
+              <input
+                class="new-deck-view__color-input new-deck-view__color-input_color_orange"
+                aria-label="Orange"
+                name="color"
+                id="orange"
+                value="#EE955E"
+                type="radio"
+              />
+            </label>
+            <label class="new-deck-view__color-label" for="yellow">
+              <input
+                class="new-deck-view__color-input new-deck-view__color-input_color_yellow"
+                aria-label="Yellow"
+                name="color"
+                id="yellow"
+                value="#F5D770"
+                type="radio"
+              />
+            </label>
+          </fieldset>
+          <label class="new-deck-view__text-label" for="new-deck-text"
+            >Write the JSON array of cards so that it matches this
+            schema<textarea
+              id="new-deck-text"
+              name="new-deck-text"
+              class="new-deck-view__text-input"
+              placeholder="This is temporary placeholder text"
+            ></textarea>
+          </label>
+          <button type="submit" class="new-deck-view__submit-btn">
+            Create the Deck
+          </button>
+        </form>
       </section>
 
       <!-- Deck View Section -->
