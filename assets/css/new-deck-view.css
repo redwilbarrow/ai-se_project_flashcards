@@ -93,7 +93,6 @@
 
 .new-deck-view__text-input {
   appearance: none;
-  outline: none;
   font: inherit;
   font-family: DM Mono;
   font-weight: 400;
