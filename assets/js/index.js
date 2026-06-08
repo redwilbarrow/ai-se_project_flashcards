@@ -3,6 +3,7 @@ import { hexToString, removeColorClasses } from "./colorMap.js";
 import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
 import { openConfirmationModal } from "./modal.js";
+import { disableSubmitBtn } from "./new-deck-view.js";
 
 const homeSection = document.querySelector("#home");
 const newDeckSection = document.querySelector("#new-deck-view");
@@ -89,6 +90,16 @@ function renderHomeView() {
     return deckEl;
   }
 
+  function slugify(str) {
+    return String(str)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   function renderDeckEl(deck) {
     const deckEl = createDeckEl(deck);
     deckContainerEl.prepend(deckEl);
@@ -112,6 +123,7 @@ function router() {
     showView(homeSection);
     renderHomeView();
   } else if (isNewDeckView) {
+    disableSubmitBtn();
     showView(newDeckSection);
   } else if (isDeckView) {
     const deckID = hash.split("/")[1];
