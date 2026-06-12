@@ -28,6 +28,32 @@
     inset 1px -1px 2px 0 #00000040;
 }
 
+.modal__container_type_error {
+  background-color: #ffaea5;
+}
+
+.modal__text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.modal__message {
+  margin: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
 .modal__text {
   font-weight: 500;
   font-size: 20px;
