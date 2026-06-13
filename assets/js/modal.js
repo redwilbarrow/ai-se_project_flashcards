@@ -5,16 +5,24 @@
 
 const modalVisibleClass = "modal_visible";
 
-function openModal(modalElement) {
+let activeModalCleanup = null;
+
+function openModal(modalElement, onClose = null) {
   modalElement.classList.add(modalVisibleClass);
+  activeModalCleanup = onClose;
   document.addEventListener("keydown", handleEscClose);
-  modalElement.addEventListener("mousedown", handleMousedownClose);
+  modalElement.addEventListener("mousedown", handleOverlayMouseDown);
 }
 
 function closeModal(modalElement) {
   modalElement.classList.remove(modalVisibleClass);
   document.removeEventListener("keydown", handleEscClose);
-  modalElement.removeEventListener("mousedown", handleMousedownClose);
+  modalElement.removeEventListener("mousedown", handleOverlayMouseDown);
+
+  if (activeModalCleanup) {
+    activeModalCleanup();
+    activeModalCleanup = null;
+  }
 }
 
 function handleEscClose(evt) {
@@ -29,7 +37,7 @@ function handleEscClose(evt) {
   }
 }
 
-function handleMousedownClose(evt) {
+function handleOverlayMouseDown(evt) {
   if (evt.target !== evt.currentTarget) {
     return;
   }
@@ -37,11 +45,7 @@ function handleMousedownClose(evt) {
   closeModal(evt.currentTarget);
 }
 
-/**************************************************************
- **************************************************************
- ****************** Confirmation Modal Logic ******************
- **************************************************************
- **************************************************************/
+// Confirmation Modal Logic
 
 const confirmationModal = document.querySelector("#confirmation-modal");
 const modalTextItemType = confirmationModal.querySelector(
@@ -55,12 +59,14 @@ let confirmCallback = null;
 function openConfirmationModal(itemType, onConfirm) {
   modalTextItemType.textContent = itemType;
   confirmCallback = onConfirm;
-  openModal(confirmationModal);
+
+  openModal(confirmationModal, () => {
+    confirmCallback = null;
+  });
 }
 
 function closeConfirmationModal() {
   closeModal(confirmationModal);
-  confirmCallback = null;
 }
 
 cancelBtn.addEventListener("click", closeConfirmationModal);
