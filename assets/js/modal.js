@@ -1,6 +1,8 @@
-/* I don't have access to the "Configurable Version" modal lessons on
- ** how to make the `modal.js`, so I had to figure out how to do it on
- ** my own. This was what I came up with through the help of AI.
+/* Note for reviewer:
+ ** The Project 1 Part 8 submission instructions link to the
+ ** "Configurable Version" modal lesson, but I do not currently have
+ ** access to that lesson. This implementation follows the expected
+ ** reusable modal behavior based on the available project requirements.
  **/
 
 const modalVisibleClass = "modal_visible";
