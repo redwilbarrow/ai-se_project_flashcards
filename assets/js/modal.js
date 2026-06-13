@@ -1,3 +1,48 @@
+/* I don't have access to the "Configurable Version" modal lessons on
+ ** how to make the `modal.js`, so I had to figure out how to do it on
+ ** my own. This was what I came up with through the help of AI.
+ **/
+
+const modalVisibleClass = "modal_visible";
+
+function openModal(modalElement) {
+  modalElement.classList.add(modalVisibleClass);
+  document.addEventListener("keydown", handleEscClose);
+  modalElement.addEventListener("mousedown", handleMousedownClose);
+}
+
+function closeModal(modalElement) {
+  modalElement.classList.remove(modalVisibleClass);
+  document.removeEventListener("keydown", handleEscClose);
+  modalElement.removeEventListener("mousedown", handleMousedownClose);
+}
+
+function handleEscClose(evt) {
+  if (evt.key !== "Escape") {
+    return;
+  }
+
+  const openedModal = document.querySelector(`.${modalVisibleClass}`);
+
+  if (openedModal) {
+    closeModal(openedModal);
+  }
+}
+
+function handleMousedownClose(evt) {
+  if (evt.target !== evt.currentTarget) {
+    return;
+  }
+
+  closeModal(evt.currentTarget);
+}
+
+/**************************************************************
+ **************************************************************
+ ****************** Confirmation Modal Logic ******************
+ **************************************************************
+ **************************************************************/
+
 const confirmationModal = document.querySelector("#confirmation-modal");
 const modalTextItemType = confirmationModal.querySelector(
   ".modal__text_item-type",
@@ -10,11 +55,11 @@ let confirmCallback = null;
 function openConfirmationModal(itemType, onConfirm) {
   modalTextItemType.textContent = itemType;
   confirmCallback = onConfirm;
-  confirmationModal.classList.add("modal_visible");
+  openModal(confirmationModal);
 }
 
 function closeConfirmationModal() {
-  confirmationModal.classList.remove("modal_visible");
+  closeModal(confirmationModal);
   confirmCallback = null;
 }
 
@@ -28,22 +73,4 @@ confirmBtn.addEventListener("click", () => {
   closeConfirmationModal();
 });
 
-/* I wanted to make it so that if the user clicks outside of the modal or
- * hits the 'Esc' button, it will close the modal. So, I asked Copilot how.
- * This was the solution we came up with.
- */
-confirmationModal.addEventListener("mousedown", (evt) => {
-  if (evt.target === confirmationModal) {
-    closeConfirmationModal();
-  }
-});
-
-document.addEventListener("keydown", (evt) => {
-  const isModalOpen = confirmationModal.classList.contains("modal_visible");
-
-  if (evt.key === "Escape" && isModalOpen) {
-    closeConfirmationModal();
-  }
-});
-
-export { openConfirmationModal };
+export { openModal, closeModal, openConfirmationModal };
