@@ -37,7 +37,9 @@ function normalizeColor(color) {
   return `#${hex.toLowerCase()}`;
 }
 
-newDeckForm.addEventListener("submit", (evt) => {
+newDeckForm.addEventListener("submit", newCardSubmitHandler);
+
+function newCardSubmitHandler(evt) {
   evt.preventDefault();
 
   const formData = new FormData(evt.target);
@@ -91,7 +93,7 @@ newDeckForm.addEventListener("submit", (evt) => {
   textAreaEl.value = "";
 
   window.location.hash = `#deck/${deckID}`;
-});
+}
 
 dismissBtn.addEventListener("click", () => {
   closeModal(errorModal);
