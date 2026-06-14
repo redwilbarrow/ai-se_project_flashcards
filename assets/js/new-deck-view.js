@@ -88,6 +88,8 @@ newDeckForm.addEventListener("submit", (evt) => {
 
   decks.push(newDeck);
 
+  textAreaEl.value = "";
+
   window.location.hash = `#deck/${deckID}`;
 });
 
