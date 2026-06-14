@@ -1,10 +1,15 @@
 import { decks } from "./decks.js";
+import { openModal, closeModal } from "./modal.js";
 
 const newDeckForm = document.querySelector("#new-deck-form");
 const submitBtn = newDeckForm.querySelector(".new-deck-view__submit-btn");
 const textAreaEl = newDeckForm.querySelector(".new-deck-view__text-input");
+const errorModal = document.querySelector("#error-modal");
+const dismissBtn = errorModal.querySelector(".modal__btn_type_dismiss");
+const errorMessageTextEl = errorModal.querySelector(".modal__message");
 
-const hexDigits = /^[0-9a-fA-F]{6}$/;
+const DEFAULT_DECK_COLOR = "#64d583";
+const HEX_DIGITS = /^[0-9a-fA-F]{6}$/;
 
 function disableSubmitBtn() {
   submitBtn.disabled = false;
@@ -21,29 +26,63 @@ function slugify(str) {
 }
 
 function normalizeColor(color) {
-  const defaultColor = "#64d583";
-  const hex = String(color ?? "").replace(/^#+/, "");
+  const hex = String(color ?? "")
+    .trim()
+    .replace(/^#+/, "");
 
-  if (!hexDigits.test(hex)) {
-    return defaultColor;
+  if (!hex || !HEX_DIGITS.test(hex)) {
+    return DEFAULT_DECK_COLOR;
   }
 
   return `#${hex.toLowerCase()}`;
 }
 
-newDeckForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+newDeckForm.addEventListener("submit", (evt) => {
+  evt.preventDefault();
 
-  const formData = new FormData(e.target);
+  const formData = new FormData(evt.target);
   const userInput = Object.fromEntries(formData.entries());
-  const jsonData = JSON.parse(userInput["new-deck-text"]);
+
+  const jsonData = parseJSON(userInput["new-deck-text"]);
+  if (jsonData === null) {
+    showError("Invalid JSON syntax. Please check your formatting.");
+    return;
+  }
+
+  const name = validateName(jsonData.name);
+  if (name === null) {
+    showError("Name must be a string between 2 and 80 characters.");
+    return;
+  }
+
+  if (!Array.isArray(jsonData.cards)) {
+    showError("Cards must be an array.");
+    return;
+  }
+
   const deckColor = normalizeColor(userInput.color);
-  const deckID = slugify(jsonData.name) + "-" + Date.now();
+  const jsonColor = jsonData.color;
+
+  if (jsonColor !== undefined && typeof jsonColor !== "string") {
+    showError(
+      "Deck color must be a string. Use one of: #64D583, #91A8F9, #EE92D7, #AA8EF0, #EE955E, #F5D770",
+    );
+    return;
+  }
+
+  if (jsonColor !== undefined && jsonColor.toLowerCase() !== deckColor) {
+    showError(
+      "The JSON color must match the selected deck color. Use one of: #64D583, #91A8F9, #EE92D7, #AA8EF0, #EE955E, #F5D770",
+    );
+    return;
+  }
+
+  const deckID = `${slugify(jsonData.name)}-${Date.now()}`;
 
   const newDeck = {
     id: deckID,
     color: deckColor,
-    name: jsonData.name,
+    name: name,
     cards: jsonData.cards,
   };
 
@@ -51,5 +90,31 @@ newDeckForm.addEventListener("submit", (e) => {
 
   window.location.hash = `#deck/${deckID}`;
 });
+
+dismissBtn.addEventListener("click", () => {
+  closeModal(errorModal);
+});
+
+function showError(message) {
+  errorMessageTextEl.textContent = message;
+  openModal(errorModal, () => {
+    errorMessageTextEl.textContent = "";
+  });
+}
+
+function validateName(name) {
+  if (typeof name != "string" || name.length < 2 || name.length > 80) {
+    return null;
+  }
+  return name;
+}
+
+function parseJSON(jsonString) {
+  try {
+    return JSON.parse(jsonString);
+  } catch (error) {
+    return null;
+  }
+}
 
 export { disableSubmitBtn };

@@ -81,7 +81,8 @@
   font-weight: 700;
 }
 
-.modal__btn_type_confirm {
+.modal__btn_type_confirm,
+.modal__btn_type_dismiss {
   background-color: #000;
   color: #fff;
 }
