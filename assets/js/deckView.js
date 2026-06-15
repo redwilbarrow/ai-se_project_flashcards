@@ -6,6 +6,12 @@ const deckTitleEl = deckViewSection.querySelector(".gallery__title");
 const practiceBtn = deckViewSection.querySelector(".gallery__practice-btn");
 const flashcardTemplateEl = document.querySelector("#flashcard-template");
 const flashcardContainerEl = deckViewSection.querySelector(".gallery__list");
+const galleryWrapperEl = deckViewSection.querySelector(
+  ".gallery__grid-wrapper",
+);
+const galleryErrorTextEl = deckViewSection.querySelector(
+  ".gallery__error-text",
+);
 
 let currentDeck = null;
 
@@ -76,7 +82,22 @@ function renderDeckView(deck) {
     flashcardContainerEl.append(flashcardEl);
   }
 
-  deck.cards.forEach(renderFlashcardEl);
+  if (!Array.isArray(deck.cards)) {
+    galleryErrorTextEl.classList.remove("hidden");
+    galleryErrorTextEl.textContent =
+      "This deck doesn't have any cards to display.";
+    galleryWrapperEl.classList.add("hidden");
+    return;
+  }
+
+  try {
+    deck.cards.forEach(renderFlashcardEl);
+  } catch (err) {
+    console.error(err);
+    galleryErrorTextEl.classList.remove("hidden");
+    galleryErrorTextEl.textContent = "Sorry, we couldn't display these cards.";
+    galleryWrapperEl.classList.add("hidden");
+  }
 }
 
 export { renderDeckView };
