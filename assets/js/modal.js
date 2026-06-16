@@ -1,9 +1,12 @@
 /* Note for reviewer:
- ** The Project 1 Part 8 submission instructions link to the
- ** "Configurable Version" modal lesson, but I do not currently have
- ** access to that lesson. This implementation follows the expected
- ** reusable modal behavior based on the available project requirements.
- **/
+ * The Project 1 Part 8 submission instructions link to the
+ * "Configurable Version" modal lesson, but I do not currently have
+ * access to that lesson. This implementation follows the expected
+ * reusable modal behavior based on the available project requirements.
+ */
+const errorModal = document.querySelector("#error-modal");
+const dismissBtn = errorModal.querySelector(".modal__btn_type_dismiss");
+const errorMessageTextEl = errorModal.querySelector(".modal__message");
 
 const modalVisibleClass = "modal_visible";
 
@@ -47,6 +50,18 @@ function handleOverlayMouseDown(evt) {
   closeModal(evt.currentTarget);
 }
 
+function showError(message) {
+  errorMessageTextEl.textContent = message;
+
+  openModal(errorModal, () => {
+    errorMessageTextEl.textContent = "";
+  });
+}
+
+dismissBtn.addEventListener("click", () => {
+  closeModal(errorModal);
+});
+
 // Confirmation Modal Logic
 
 const confirmationModal = document.querySelector("#confirmation-modal");
@@ -81,4 +96,4 @@ confirmBtn.addEventListener("click", () => {
   closeConfirmationModal();
 });
 
-export { openModal, closeModal, openConfirmationModal };
+export { openModal, closeModal, openConfirmationModal, showError };

@@ -1,12 +1,9 @@
 import { decks } from "./decks.js";
-import { openModal, closeModal } from "./modal.js";
+import { showError } from "./modal.js";
 
 const newDeckForm = document.querySelector("#new-deck-form");
 const submitBtn = newDeckForm.querySelector(".new-deck-view__submit-btn");
 const textAreaEl = newDeckForm.querySelector(".new-deck-view__text-input");
-const errorModal = document.querySelector("#error-modal");
-const dismissBtn = errorModal.querySelector(".modal__btn_type_dismiss");
-const errorMessageTextEl = errorModal.querySelector(".modal__message");
 
 const DEFAULT_DECK_COLOR = "#64d583";
 const HEX_DIGITS = /^[0-9a-fA-F]{6}$/;
@@ -93,17 +90,6 @@ function newCardSubmitHandler(evt) {
   textAreaEl.value = "";
 
   window.location.hash = `#deck/${deckID}`;
-}
-
-dismissBtn.addEventListener("click", () => {
-  closeModal(errorModal);
-});
-
-function showError(message) {
-  errorMessageTextEl.textContent = message;
-  openModal(errorModal, () => {
-    errorMessageTextEl.textContent = "";
-  });
 }
 
 function validateName(name) {
