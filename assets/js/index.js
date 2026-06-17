@@ -4,7 +4,7 @@ import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
 import { openConfirmationModal } from "./modal.js";
 import { disableSubmitBtn } from "./new-deck-view.js";
-import { getDecks } from "./api.js";
+import { getDecks, deleteDeck } from "./api.js";
 import { showError } from "./modal.js";
 
 const homeSection = document.querySelector("#home");
@@ -73,7 +73,21 @@ function createDeckEl(deck) {
   const deleteBtn = deckEl.querySelector(".card__delete-btn");
   deleteBtn.addEventListener("click", () => {
     openConfirmationModal("deck", () => {
-      deckEl.remove();
+      deleteDeck(deck._id)
+        .then(() => {
+          deckEl.remove();
+
+          const deckIndex = fetchedDecks.findIndex(
+            (fetchedDeck) => fetchedDeck === deck._id,
+          );
+
+          if (deckIndex !== -1) {
+            fetchedDecks.splice(deckIndex, 1);
+          }
+        })
+        .catch(() => {
+          showError("Error deleting deck");
+        });
     });
   });
 
