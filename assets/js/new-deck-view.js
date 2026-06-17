@@ -79,7 +79,7 @@ function newCardSubmitHandler(evt) {
   const deckID = `${slugify(jsonData.name)}-${Date.now()}`;
 
   const newDeck = {
-    id: deckID,
+    _id: deckID,
     color: deckColor,
     name: name,
     cards: jsonData.cards,

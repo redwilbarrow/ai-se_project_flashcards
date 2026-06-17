@@ -17,9 +17,21 @@ let currentDeck = null;
 
 practiceBtn.addEventListener("click", () => {
   if (currentDeck) {
-    window.location.hash = `#carousel/${currentDeck.id}`;
+    window.location.hash = `#carousel/${currentDeck._id}`;
   }
 });
+
+// getCards Funtion
+//
+// function getCards() {
+//   return fetch('https://jsonplaceholder.typicode.com/posts')
+//     .then((res) => {
+//       if (!res.ok) {
+//         return Promise.reject(`Error: ${res.status}`);
+//       }
+//       return res.json();
+//     })
+// }
 
 function renderDeckView(deck) {
   currentDeck = deck;
@@ -89,6 +101,20 @@ function renderDeckView(deck) {
     galleryWrapperEl.classList.add("hidden");
     return;
   }
+
+  // getCards Call
+  //
+  // getCards()
+  //   .then((cards) => {
+  //     cards.forEach(renderFlashcardEl);
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //     galleryErrorTextEl.classList.remove("hidden");
+  //     galleryErrorTextEl.textContent =
+  //       "Sorry, we couldn't display these cards.";
+  //     galleryWrapperEl.classList.add("hidden");
+  //   });
 
   try {
     deck.cards.forEach(renderFlashcardEl);

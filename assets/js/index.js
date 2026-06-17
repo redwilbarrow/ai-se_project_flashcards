@@ -1,4 +1,4 @@
-import { decks, getDeckByID } from "./decks.js";
+import { fetchedDecks, getDeckByID } from "./decks.js";
 import { hexToString, removeColorClasses } from "./colorMap.js";
 import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
@@ -79,7 +79,7 @@ function createDeckEl(deck) {
 
   // Deck link
   const deckLinkEl = deckEl.querySelector(".card__link");
-  deckLinkEl.href = `#deck/${deck.id}`;
+  deckLinkEl.href = `#deck/${deck._id}`;
 
   return deckEl;
 }
@@ -137,6 +137,7 @@ function router() {
 window.addEventListener("DOMContentLoaded", () => {
   getDecks()
     .then((decks) => {
+      fetchedDecks.push(...decks);
       renderHomeView();
       decks.forEach(renderDeckEl);
     })
