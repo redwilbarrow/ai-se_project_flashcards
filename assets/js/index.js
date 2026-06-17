@@ -4,6 +4,8 @@ import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
 import { openConfirmationModal } from "./modal.js";
 import { disableSubmitBtn } from "./new-deck-view.js";
+import { getDecks } from "./api.js";
+import { showError } from "./modal.js";
 
 const homeSection = document.querySelector("#home");
 const newDeckSection = document.querySelector("#new-deck-view");
@@ -13,14 +15,9 @@ const notFoundSection = document.querySelector("#not-found");
 const pageEl = document.querySelector(".page");
 const mainContentEl = document.querySelector(".page__main-content");
 const newDeckBtn = document.querySelector("#home .gallery__new-card-btn");
+const deckTemplateEl = document.querySelector("#deck-template");
+const deckContainerEl = homeSection.querySelector(".gallery__list");
 
-/* I originally built this showView helper during a previous submission to avoid
- * repeating view show/hide logic in every render function. I kept it for this
- * submission instead of replacing it with the optional display-based version
- * from the current instructions because this version follows the same DRY idea,
- * uses the project's page__section_hidden class modifier, and also handles
- * route-specific layout changes like the mobile bar and carousel view styling.
- */
 function showView(activeView) {
   homeSection.classList.add("page__section_hidden");
   newDeckSection.classList.add("page__section_hidden");
@@ -50,64 +47,49 @@ function showView(activeView) {
 
 // Home view
 function renderHomeView() {
-  const deckTemplateEl = document.querySelector("#deck-template");
-  const deckContainerEl = homeSection.querySelector(".gallery__list");
   deckContainerEl.innerHTML = "";
-
-  // Deck template
-  function createDeckEl(deck) {
-    const deckEl = deckTemplateEl.content
-      .querySelector(".card")
-      .cloneNode(true);
-
-    // Deck color
-    const deckColor = hexToString(deck.color);
-
-    if (deckColor && deckColor !== "default") {
-      removeColorClasses(deckEl);
-      deckEl.classList.add(`card_color_${deckColor}`);
-    }
-
-    // Deck text
-    const deckTitleEl = deckEl.querySelector(".card__title");
-    deckTitleEl.textContent = deck.name;
-
-    const deckCountEl = deckEl.querySelector(".card__count");
-    deckCountEl.textContent = `${deck.cards.length} cards`;
-
-    // Deck delete button
-    const deleteBtn = deckEl.querySelector(".card__delete-btn");
-    deleteBtn.addEventListener("click", () => {
-      openConfirmationModal("deck", () => {
-        deckEl.remove();
-      });
-    });
-
-    // Deck link
-    const deckLinkEl = deckEl.querySelector(".card__link");
-    deckLinkEl.href = `#deck/${deck.id}`;
-
-    return deckEl;
-  }
-
-  function slugify(str) {
-    return String(str)
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  }
-
-  function renderDeckEl(deck) {
-    const deckEl = createDeckEl(deck);
-    deckContainerEl.prepend(deckEl);
-  }
-
-  decks.forEach(renderDeckEl);
 }
 
+// Deck template
+function createDeckEl(deck) {
+  const deckEl = deckTemplateEl.content.querySelector(".card").cloneNode(true);
+
+  // Deck color
+  const deckColor = hexToString(deck.color);
+
+  if (deckColor && deckColor !== "default") {
+    removeColorClasses(deckEl);
+    deckEl.classList.add(`card_color_${deckColor}`);
+  }
+
+  // Deck text
+  const deckTitleEl = deckEl.querySelector(".card__title");
+  deckTitleEl.textContent = deck.name;
+
+  const deckCountEl = deckEl.querySelector(".card__count");
+  deckCountEl.textContent = `${deck.cards.length} cards`;
+
+  // Deck delete button
+  const deleteBtn = deckEl.querySelector(".card__delete-btn");
+  deleteBtn.addEventListener("click", () => {
+    openConfirmationModal("deck", () => {
+      deckEl.remove();
+    });
+  });
+
+  // Deck link
+  const deckLinkEl = deckEl.querySelector(".card__link");
+  deckLinkEl.href = `#deck/${deck.id}`;
+
+  return deckEl;
+}
+
+function renderDeckEl(deck) {
+  const deckEl = createDeckEl(deck);
+  deckContainerEl.prepend(deckEl);
+}
+
+// New Deck Event Listener
 newDeckBtn.addEventListener("click", () => {
   window.location.hash = "#new-deck-view";
 });
@@ -121,7 +103,6 @@ function router() {
 
   if (hash === "home" || hash === "") {
     showView(homeSection);
-    renderHomeView();
   } else if (isNewDeckView) {
     disableSubmitBtn();
     showView(newDeckSection);
@@ -153,5 +134,15 @@ function router() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", router);
+window.addEventListener("DOMContentLoaded", () => {
+  getDecks()
+    .then((decks) => {
+      renderHomeView();
+      decks.forEach(renderDeckEl);
+    })
+    .catch(showError)
+    .finally(() => {
+      router();
+    });
+});
 window.addEventListener("hashchange", router);
