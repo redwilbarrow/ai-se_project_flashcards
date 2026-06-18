@@ -1,4 +1,5 @@
-import { decks } from "./decks.js";
+import { fetchedDecks } from "./decks.js";
+import { addDeck } from "./api.js";
 import { showError } from "./modal.js";
 
 const newDeckForm = document.querySelector("#new-deck-form");
@@ -76,20 +77,23 @@ function newCardSubmitHandler(evt) {
     return;
   }
 
-  const deckID = `${slugify(jsonData.name)}-${Date.now()}`;
-
-  const newDeck = {
-    _id: deckID,
+  const newDeckData = {
     color: deckColor,
     name: name,
     cards: jsonData.cards,
   };
 
-  decks.push(newDeck);
+  addDeck(newDeckData)
+    .then((newDeck) => {
+      fetchedDecks.push(newDeck);
 
-  textAreaEl.value = "";
+      // Clear #new-deck-text field
+      textAreaEl.value = "";
 
-  window.location.hash = `#deck/${deckID}`;
+      // Update hash
+      window.location.hash = `#deck/${newDeck._id}`;
+    })
+    .catch(showError);
 }
 
 function validateName(name) {
