@@ -85,7 +85,21 @@ function newCardSubmitHandler(evt) {
 
   addDeck(newDeckData)
     .then((newDeck) => {
-      fetchedDecks.push(newDeck);
+      /* Was running into an issue where the API is initially returning
+       ** `newDeck.cards` empty, so cards were not displaying. SO, I added
+       ** the following.
+       */
+      const savedDeck = {
+        ...newDeckData,
+        ...newDeck,
+        cards:
+          Array.isArray(newDeck.cards) && newDeck.cards.length > 0
+            ? newDeck.cards
+            : newDeckData.cards,
+      };
+
+      // Push `savedDeck`
+      fetchedDecks.push(savedDeck);
 
       // Clear #new-deck-text field
       textAreaEl.value = "";
