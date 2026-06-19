@@ -47,7 +47,7 @@ function handleOverlayMouseDown(evt) {
 
 function showError(message) {
   modalTitle.classList.add("modal__title_type_error");
-  modalTitle.textContent = "An error has occured";
+  modalTitle.textContent = "An error has occurred";
   modalMessage.textContent = message;
   modalMessage.classList.remove("modal__message_hidden");
   confirmBtn.textContent = "Dismiss";

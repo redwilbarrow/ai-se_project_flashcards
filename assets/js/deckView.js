@@ -9,9 +9,6 @@ const flashcardContainerEl = deckViewSection.querySelector(".gallery__list");
 const galleryWrapperEl = deckViewSection.querySelector(
   ".gallery__grid-wrapper",
 );
-const galleryErrorTextEl = deckViewSection.querySelector(
-  ".gallery__error-text",
-);
 
 let currentDeck = null;
 
@@ -20,18 +17,6 @@ practiceBtn.addEventListener("click", () => {
     window.location.hash = `#carousel/${currentDeck._id}`;
   }
 });
-
-// getCards Funtion
-//
-// function getCards() {
-//   return fetch('https://jsonplaceholder.typicode.com/posts')
-//     .then((res) => {
-//       if (!res.ok) {
-//         return Promise.reject(`Error: ${res.status}`);
-//       }
-//       return res.json();
-//     })
-// }
 
 function renderDeckView(deck) {
   currentDeck = deck;
@@ -94,36 +79,7 @@ function renderDeckView(deck) {
     flashcardContainerEl.append(flashcardEl);
   }
 
-  if (!Array.isArray(deck.cards)) {
-    galleryErrorTextEl.classList.remove("hidden");
-    galleryErrorTextEl.textContent =
-      "This deck doesn't have any cards to display.";
-    galleryWrapperEl.classList.add("hidden");
-    return;
-  }
-
-  // getCards Call
-  //
-  // getCards()
-  //   .then((cards) => {
-  //     cards.forEach(renderFlashcardEl);
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //     galleryErrorTextEl.classList.remove("hidden");
-  //     galleryErrorTextEl.textContent =
-  //       "Sorry, we couldn't display these cards.";
-  //     galleryWrapperEl.classList.add("hidden");
-  //   });
-
-  try {
-    deck.cards.forEach(renderFlashcardEl);
-  } catch (err) {
-    console.error(err);
-    galleryErrorTextEl.classList.remove("hidden");
-    galleryErrorTextEl.textContent = "Sorry, we couldn't display these cards.";
-    galleryWrapperEl.classList.add("hidden");
-  }
+  deck.cards.forEach(renderFlashcardEl);
 }
 
 export { renderDeckView };

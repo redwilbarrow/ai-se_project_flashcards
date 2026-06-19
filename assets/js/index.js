@@ -2,10 +2,9 @@ import { fetchedDecks, getDeckByID } from "./decks.js";
 import { hexToString, removeColorClasses } from "./colorMap.js";
 import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
-import { openConfirmationModal } from "./modal.js";
+import { openConfirmationModal, showError } from "./modal.js";
 import { disableSubmitBtn } from "./new-deck-view.js";
 import { getDecks, deleteDeck } from "./api.js";
-import { showError } from "./modal.js";
 
 const homeSection = document.querySelector("#home");
 const newDeckSection = document.querySelector("#new-deck-view");
@@ -129,7 +128,8 @@ function router() {
     const deck = getDeckByID(deckID);
 
     if (!deck) {
-      showView(notFoundSection);
+      showView(homeSection);
+      showError("Sorry, there was an issue fetching that deck.");
       return;
     }
 
@@ -141,7 +141,8 @@ function router() {
 
     // Handle missing carousel decks.
     if (!deck) {
-      showView(notFoundSection);
+      showView(homeSection);
+      showError("Sorry, there was an issue fetching the deck.");
       return;
     }
 
