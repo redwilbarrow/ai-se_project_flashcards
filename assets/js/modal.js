@@ -49,9 +49,9 @@ function showError(message) {
   modalTitle.classList.add("modal__title_type_error");
   modalTitle.textContent = "An error has occured";
   modalMessage.textContent = message;
-  modalMessage.classList.remove("hidden");
+  modalMessage.classList.remove("modal__message_hidden");
   confirmBtn.textContent = "Dismiss";
-  cancelBtn.classList.add("hidden");
+  cancelBtn.classList.add("modal__btn_hidden");
   modalContainer.classList.add("modal__container_type_error");
 
   confirmCallback = null;
@@ -69,10 +69,10 @@ function openConfirmationModal(itemType, onConfirm) {
 function resetModal() {
   modalTitle.textContent = "";
   modalMessage.textContent = "";
-  modalMessage.classList.add("hidden");
+  modalMessage.classList.add("modal__message_hidden");
   confirmBtn.textContent = "Delete";
   cancelBtn.textContent = "Cancel";
-  cancelBtn.classList.remove("hidden");
+  cancelBtn.classList.remove("modal__btn_hidden");
   modalContainer.classList.remove("modal__container_type_error");
 
   confirmCallback = null;

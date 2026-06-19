@@ -74,6 +74,11 @@
   padding: 12px 16px 14px;
 }
 
+.modal__message_hidden,
+.modal__btn_hidden {
+  display: none;
+}
+
 .modal__btn_type_cancel {
   background-color: #e8e8e8;
   color: #1a1a1a80;
