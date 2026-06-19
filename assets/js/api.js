@@ -36,4 +36,11 @@ function addDeck({ name, color, cards }) {
   }).then(processResponse);
 }
 
-export { getDecks, deleteDeck, addDeck };
+function deleteCard(id) {
+  return fetch(`${cardsUrl}/${id}`, {
+    method: "DELETE",
+    headers,
+  }).then(processResponse);
+}
+
+export { getDecks, deleteDeck, addDeck, deleteCard };

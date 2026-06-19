@@ -1,5 +1,6 @@
 import { hexToString, removeColorClasses } from "./colorMap.js";
-import { openConfirmationModal } from "./modal.js";
+import { openConfirmationModal, showError } from "./modal.js";
+import { deleteCard } from "./api.js";
 
 const deckViewSection = document.querySelector("#deck-view");
 const deckTitleEl = deckViewSection.querySelector(".gallery__title");
@@ -65,7 +66,21 @@ function renderDeckView(deck) {
 
     deleteBtn.addEventListener("click", () => {
       openConfirmationModal("card", () => {
-        flashcardEl.remove();
+        deleteCard(cardData._id)
+          .then(() => {
+            flashcardEl.remove();
+
+            const cardIndex = deck.cards.findIndex(
+              (card) => card._id === cardData._id,
+            );
+
+            if (cardIndex !== -1) {
+              deck.cards.splice(cardIndex, 1);
+            }
+          })
+          .catch(() => {
+            showError("Error deleting card");
+          });
       });
     });
 
