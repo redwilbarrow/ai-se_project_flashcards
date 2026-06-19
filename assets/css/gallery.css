@@ -37,7 +37,6 @@
 
 .gallery__practice-btn:hover {
   background-image: linear-gradient(to top, #595959 0%, #1a1a1a 48%);
-  color: #fff;
 }
 
 .gallery__grid-wrapper {

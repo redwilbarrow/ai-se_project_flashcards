@@ -4,30 +4,29 @@
  * access to that lesson. This implementation follows the expected
  * reusable modal behavior based on the available project requirements.
  */
-const errorModal = document.querySelector("#error-modal");
-const dismissBtn = errorModal.querySelector(".modal__btn_type_dismiss");
-const errorMessageTextEl = errorModal.querySelector(".modal__message");
+
+const modal = document.querySelector("#modal");
+const modalContainer = modal.querySelector(".modal__container");
+const modalTitle = modal.querySelector(".modal__title");
+const modalMessage = modal.querySelector(".modal__message");
+const cancelBtn = modal.querySelector(".modal__btn_type_cancel");
+const confirmBtn = modal.querySelector(".modal__btn_type_confirm");
+
+let confirmCallback = null;
 
 const modalVisibleClass = "modal_visible";
 
-let activeModalCleanup = null;
-
-function openModal(modalElement, onClose = null) {
-  modalElement.classList.add(modalVisibleClass);
-  activeModalCleanup = onClose;
+function openModal() {
+  modal.classList.add(modalVisibleClass);
   document.addEventListener("keydown", handleEscClose);
-  modalElement.addEventListener("mousedown", handleOverlayMouseDown);
+  modal.addEventListener("mousedown", handleOverlayMouseDown);
 }
 
-function closeModal(modalElement) {
-  modalElement.classList.remove(modalVisibleClass);
+function closeModal() {
+  modal.classList.remove(modalVisibleClass);
   document.removeEventListener("keydown", handleEscClose);
-  modalElement.removeEventListener("mousedown", handleOverlayMouseDown);
-
-  if (activeModalCleanup) {
-    activeModalCleanup();
-    activeModalCleanup = null;
-  }
+  modal.removeEventListener("mousedown", handleOverlayMouseDown);
+  resetModal();
 }
 
 function handleEscClose(evt) {
@@ -35,11 +34,7 @@ function handleEscClose(evt) {
     return;
   }
 
-  const openedModal = document.querySelector(`.${modalVisibleClass}`);
-
-  if (openedModal) {
-    closeModal(openedModal);
-  }
+  closeModal();
 }
 
 function handleOverlayMouseDown(evt) {
@@ -47,53 +42,50 @@ function handleOverlayMouseDown(evt) {
     return;
   }
 
-  closeModal(evt.currentTarget);
+  closeModal();
 }
 
 function showError(message) {
-  errorMessageTextEl.textContent = message;
+  modalTitle.classList.add("modal__title_type_error");
+  modalTitle.textContent = "An error has occured";
+  modalMessage.textContent = message;
+  modalMessage.classList.remove("hidden");
+  confirmBtn.textContent = "Dismiss";
+  cancelBtn.classList.add("hidden");
+  modalContainer.classList.add("modal__container_type_error");
 
-  openModal(errorModal, () => {
-    errorMessageTextEl.textContent = "";
-  });
+  confirmCallback = null;
+  openModal();
 }
-
-dismissBtn.addEventListener("click", () => {
-  closeModal(errorModal);
-});
-
-// Confirmation Modal Logic
-
-const confirmationModal = document.querySelector("#confirmation-modal");
-const modalTextItemType = confirmationModal.querySelector(
-  ".modal__text_item-type",
-);
-const cancelBtn = confirmationModal.querySelector(".modal__btn_type_cancel");
-const confirmBtn = confirmationModal.querySelector(".modal__btn_type_confirm");
-
-let confirmCallback = null;
 
 function openConfirmationModal(itemType, onConfirm) {
-  modalTextItemType.textContent = itemType;
+  modalTitle.classList.remove("modal__title_type_error");
+  modalTitle.textContent = `Are you sure you want to delete this ${itemType}`;
+
   confirmCallback = onConfirm;
-
-  openModal(confirmationModal, () => {
-    confirmCallback = null;
-  });
+  openModal();
 }
 
-function closeConfirmationModal() {
-  closeModal(confirmationModal);
+function resetModal() {
+  modalTitle.textContent = "";
+  modalMessage.textContent = "";
+  modalMessage.classList.add("hidden");
+  confirmBtn.textContent = "Delete";
+  cancelBtn.textContent = "Cancel";
+  cancelBtn.classList.remove("hidden");
+  modalContainer.classList.remove("modal__container_type_error");
+
+  confirmCallback = null;
 }
 
-cancelBtn.addEventListener("click", closeConfirmationModal);
+cancelBtn.addEventListener("click", closeModal);
 
 confirmBtn.addEventListener("click", () => {
   if (confirmCallback) {
     confirmCallback();
   }
 
-  closeConfirmationModal();
+  closeModal();
 });
 
 export { openModal, closeModal, openConfirmationModal, showError };
