@@ -67,25 +67,26 @@ function newCardSubmitHandler(evt) {
     return;
   }
 
-  const newDeckData = {
+  const newDeck = {
     color: deckColor,
     name: name,
     cards: jsonData.cards,
   };
 
-  addDeck(newDeckData)
-    .then((newDeck) => {
-      /* Was running into an issue where the API is initially returning
-       ** `newDeck.cards` empty, so cards were not displaying. SO, I added
-       ** the following.
+  addDeck(newDeck)
+    .then((fetchedNewDeck) => {
+      /* I was running into an issue where the API is initially returning
+       * `newDeck.cards` empty, so cards were not displaying. SO, I added
+       * the following.
        */
       const savedDeck = {
-        ...newDeckData,
         ...newDeck,
+        ...fetchedNewDeck,
         cards:
-          Array.isArray(newDeck.cards) && newDeck.cards.length > 0
-            ? newDeck.cards
-            : newDeckData.cards,
+          Array.isArray(fetchedNewDeck.cards) &&
+          fetchedNewDeck.cards.length === newDeck.cards.length
+            ? fetchedNewDeck.cards
+            : newDeck.cards,
       };
 
       // Push `savedDeck`
@@ -95,7 +96,7 @@ function newCardSubmitHandler(evt) {
       textAreaEl.value = "";
 
       // Update hash
-      window.location.hash = `#deck/${newDeck._id}`;
+      window.location.hash = `#deck/${savedDeck._id}`;
     })
     .catch(showError);
 }
