@@ -105,6 +105,10 @@ function renderDeckEl(deck) {
   deckContainerEl.prepend(deckEl);
 }
 
+window.addEventListener("deckadded", (evt) => {
+  renderDeckEl(evt.detail);
+});
+
 // New Deck Event Listener
 newDeckBtn.addEventListener("click", () => {
   window.location.hash = "#new-deck-view";

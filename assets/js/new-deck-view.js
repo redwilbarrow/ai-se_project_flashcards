@@ -92,6 +92,13 @@ function newCardSubmitHandler(evt) {
       // Push `savedDeck`
       fetchedDecks.push(savedDeck);
 
+      // Custom Event to tell Home view to display new deck (only way I could make this work while still following TripleTen instructions)
+      window.dispatchEvent(
+        new CustomEvent("deckadded", {
+          detail: savedDeck,
+        }),
+      );
+
       // Clear #new-deck-text field
       textAreaEl.value = "";
 
