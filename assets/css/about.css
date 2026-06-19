@@ -1,0 +1,21 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  max-width: 670px;
+  width: 100%;
+  margin-inline: auto;
+  gap: 32px;
+}
+
+.about__title {
+  margin: 0;
+}
+
+.about__text {
+  margin: 0 0 20px;
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: 0;
+}

@@ -12,6 +12,8 @@ const newDeckSection = document.querySelector("#new-deck-view");
 const deckViewSection = document.querySelector("#deck-view");
 const carouselSection = document.querySelector("#carousel");
 const notFoundSection = document.querySelector("#not-found");
+const aboutSection = document.querySelector("#about");
+
 const pageEl = document.querySelector(".page");
 const mainContentEl = document.querySelector(".page__main-content");
 const newDeckBtn = document.querySelector("#home .gallery__new-card-btn");
@@ -24,6 +26,7 @@ function showView(activeView) {
   deckViewSection.classList.add("page__section_hidden");
   carouselSection.classList.add("page__section_hidden");
   notFoundSection.classList.add("page__section_hidden");
+  aboutSection.classList.add("page__section_hidden");
 
   activeView.classList.remove("page__section_hidden");
 
@@ -114,6 +117,7 @@ function router() {
   const isNewDeckView = hash === "new-deck-view";
   const isDeckView = hash.startsWith("deck/");
   const isCarouselView = hash.startsWith("carousel/");
+  const isAboutView = hash.startsWith("about");
 
   if (hash === "home" || hash === "") {
     showView(homeSection);
@@ -143,6 +147,9 @@ function router() {
 
     showView(carouselSection);
     renderCarouselView(deck);
+  } else if (isAboutView) {
+    showView(aboutSection);
+    return;
   } else {
     showView(notFoundSection);
   }

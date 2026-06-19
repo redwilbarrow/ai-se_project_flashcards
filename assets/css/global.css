@@ -8,6 +8,29 @@ html {
   }
 }
 
+code {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #24292f;
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  font-size: 85%;
+}
+
+pre {
+  background-color: #1a1a1acc;
+  color: rgb(220 220 220);
+  padding: 10px 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+pre code {
+  background-color: transparent;
+  color: #ffffff;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
 .hidden {
   display: none;
   visibility: hidden;
