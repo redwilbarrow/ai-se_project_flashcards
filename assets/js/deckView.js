@@ -6,7 +6,9 @@ const deckViewSection = document.querySelector("#deck-view");
 const deckTitleEl = deckViewSection.querySelector(".gallery__title");
 const practiceBtn = deckViewSection.querySelector(".gallery__practice-btn");
 const flashcardTemplateEl = document.querySelector("#flashcard-template");
-const flashcardFormTemplateEl = document.querySelector("#flashcard-form-template");
+const flashcardFormTemplateEl = document.querySelector(
+  "#flashcard-form-template",
+);
 const flashcardContainerEl = deckViewSection.querySelector(".gallery__list");
 const galleryWrapperEl = deckViewSection.querySelector(
   ".gallery__grid-wrapper",
@@ -26,7 +28,9 @@ const sideNames = {
 
 function getDeckColorClass() {
   const deckColor = hexToString(currentDeck.color);
-  return deckColor && deckColor !== "default" ? `card_color_${deckColor}` : null;
+  return deckColor && deckColor !== "default"
+    ? `card_color_${deckColor}`
+    : null;
 }
 
 function applyDeckColor(cardEl) {
@@ -167,7 +171,9 @@ function createFormCardEl(editor) {
     syncEditorValue(editor);
     updateFormSide(
       editor,
-      editor.side === sideNames.question ? sideNames.answer : sideNames.question,
+      editor.side === sideNames.question
+        ? sideNames.answer
+        : sideNames.question,
     );
     focusActiveField(editor);
   });
@@ -289,7 +295,9 @@ function openEditCardForm(cardData, savedCardEl, showingQuestion) {
       question: cardData.question,
       answer: cardData.answer || "",
     },
-    answerPlaceholder: cardData.answer ? "Type the answer or definition" : "No answer provided",
+    answerPlaceholder: cardData.answer
+      ? "Type the answer or definition"
+      : "No answer provided",
   };
 
   const formCardEl = createFormCardEl(editor);
@@ -393,6 +401,15 @@ function hasEditChanges(editor) {
   );
 }
 
+function hasNewCardDraft(editor) {
+  syncEditorValue(editor);
+
+  return (
+    editor.values.question.trim().length > 0 ||
+    editor.values.answer.trim().length > 0
+  );
+}
+
 function attemptCloseActiveEditor() {
   if (!activeEditor) {
     return;
@@ -401,6 +418,11 @@ function attemptCloseActiveEditor() {
   const editor = activeEditor;
 
   if (editor.mode === "new") {
+    if (!hasNewCardDraft(editor)) {
+      cancelNewCard(editor);
+      return;
+    }
+
     openDiscardModal({
       title: "Cancel new card?",
       message:
