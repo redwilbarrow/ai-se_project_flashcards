@@ -126,7 +126,16 @@
               id="new-deck-text"
               name="new-deck-text"
               class="new-deck-view__text-input"
-              placeholder="This is temporary placeholder text"
+              placeholder='{
+  "name": "Name",
+  "cards": [
+    {
+      "question": "Question?",
+      "answer": "Answer"
+    },
+    ...
+  ]
+}'
               required
             ></textarea>
           </label>
@@ -278,7 +287,7 @@
               aria-label="Card answer"
               placeholder="Type the answer or definition"
             ></textarea>
-            <div class="card__row">
+            <div class="card__row card__row_editor-actions">
               <button
                 type="button"
                 aria-label="Flip this Card"

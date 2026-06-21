@@ -114,6 +114,7 @@
 
 .new-deck-view__text-input::placeholder {
   color: #1a1a1a80;
+  font-size: 0.98em;
 }
 
 .new-deck-view__submit-btn {
