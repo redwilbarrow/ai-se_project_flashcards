@@ -9,10 +9,21 @@ const textAreaEl = newDeckForm.querySelector(".new-deck-view__text-input");
 const DEFAULT_DECK_COLOR = "#64d583";
 const HEX_DIGITS = /^[0-9a-fA-F]{6}$/;
 
-function disableSubmitBtn() {
+/**
+ * Enables the new deck submit button when the new deck view opens.
+ *
+ * @returns {void}
+ */
+function enableSubmitBtn() {
   submitBtn.disabled = false;
 }
 
+/**
+ * Converts a user-selected color value into a valid lowercase hex color.
+ *
+ * @param {string} color - The color value from the form.
+ * @returns {string} A normalized hex color, or the default color if invalid.
+ */
 function normalizeColor(color) {
   const hex = String(color ?? "")
     .trim()
@@ -27,6 +38,12 @@ function normalizeColor(color) {
 
 newDeckForm.addEventListener("submit", newCardSubmitHandler);
 
+/**
+ * Validates and submits the new deck form data.
+ *
+ * @param {SubmitEvent} evt - The form submit event.
+ * @returns {void}
+ */
 function newCardSubmitHandler(evt) {
   evt.preventDefault();
 
@@ -108,6 +125,12 @@ function newCardSubmitHandler(evt) {
     .catch(showError);
 }
 
+/**
+ * Validates that a deck name is a string with the required length.
+ *
+ * @param {*} name - The value to validate as a deck name.
+ * @returns {string|null} The valid name, or null when the value is invalid.
+ */
 function validateName(name) {
   if (typeof name != "string" || name.length < 2 || name.length > 80) {
     return null;
@@ -115,6 +138,12 @@ function validateName(name) {
   return name;
 }
 
+/**
+ * Safely parses a JSON string.
+ *
+ * @param {string} jsonString - The JSON text to parse.
+ * @returns {object|null} The parsed value, or null when parsing fails.
+ */
 function parseJSON(jsonString) {
   try {
     return JSON.parse(jsonString);
@@ -123,4 +152,4 @@ function parseJSON(jsonString) {
   }
 }
 
-export { disableSubmitBtn };
+export { enableSubmitBtn };

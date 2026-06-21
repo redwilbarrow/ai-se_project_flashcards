@@ -3,7 +3,7 @@ import { hexToString, removeColorClasses } from "./colorMap.js";
 import { renderDeckView } from "./deckView.js";
 import { renderCarouselView } from "./carousel.js";
 import { openConfirmationModal, showError } from "./modal.js";
-import { disableSubmitBtn } from "./new-deck-view.js";
+import { enableSubmitBtn } from "./new-deck-view.js";
 import { getDecks, deleteDeck } from "./api.js";
 
 const homeSection = document.querySelector("#home");
@@ -19,6 +19,12 @@ const newDeckBtn = document.querySelector("#home .gallery__new-card-btn");
 const deckTemplateEl = document.querySelector("#deck-template");
 const deckContainerEl = homeSection.querySelector(".gallery__list");
 
+/**
+ * Shows one page section and updates page-level layout classes for that view.
+ *
+ * @param {HTMLElement} activeView - The section element to display.
+ * @returns {void}
+ */
 function showView(activeView) {
   homeSection.classList.add("page__section_hidden");
   newDeckSection.classList.add("page__section_hidden");
@@ -48,11 +54,26 @@ function showView(activeView) {
 }
 
 // Home view
+/**
+ * Clears the home view deck list before decks are rendered.
+ *
+ * @returns {void}
+ */
 function renderHomeView() {
   deckContainerEl.innerHTML = "";
 }
 
 // Deck template
+/**
+ * Creates a deck card element for the home view.
+ *
+ * @param {object} deck - The deck to render.
+ * @param {string} deck._id - The deck ID.
+ * @param {string} deck.name - The deck name.
+ * @param {string} deck.color - The deck color hex value.
+ * @param {Array<object>} deck.cards - The deck's cards.
+ * @returns {HTMLElement} The completed deck card element.
+ */
 function createDeckEl(deck) {
   const deckEl = deckTemplateEl.content.querySelector(".card").cloneNode(true);
 
@@ -100,6 +121,12 @@ function createDeckEl(deck) {
   return deckEl;
 }
 
+/**
+ * Adds a deck card element to the beginning of the home view list.
+ *
+ * @param {object} deck - The deck to render.
+ * @returns {void}
+ */
 function renderDeckEl(deck) {
   const deckEl = createDeckEl(deck);
   deckContainerEl.prepend(deckEl);
@@ -115,6 +142,11 @@ newDeckBtn.addEventListener("click", () => {
 });
 
 // Main router
+/**
+ * Reads the URL hash and renders the matching app view.
+ *
+ * @returns {void}
+ */
 function router() {
   const hash = window.location.hash.slice(1) || "home";
   const isNewDeckView = hash === "new-deck-view";
@@ -125,7 +157,7 @@ function router() {
   if (hash === "home" || hash === "") {
     showView(homeSection);
   } else if (isNewDeckView) {
-    disableSubmitBtn();
+    enableSubmitBtn();
     showView(newDeckSection);
   } else if (isDeckView) {
     const deckID = hash.split("/")[1];

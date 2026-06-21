@@ -26,6 +26,11 @@ const sideNames = {
   answer: "answer",
 };
 
+/**
+ * Builds the card color class for the current deck.
+ *
+ * @returns {string|null} The card color modifier class, or null for the default color.
+ */
 function getDeckColorClass() {
   const deckColor = hexToString(currentDeck.color);
   return deckColor && deckColor !== "default"
@@ -33,6 +38,12 @@ function getDeckColorClass() {
     : null;
 }
 
+/**
+ * Applies the current deck color to a card element.
+ *
+ * @param {HTMLElement} cardEl - The card element to color.
+ * @returns {void}
+ */
 function applyDeckColor(cardEl) {
   const deckColorClass = getDeckColorClass();
 
@@ -42,10 +53,23 @@ function applyDeckColor(cardEl) {
   }
 }
 
+/**
+ * Finds the index of a card inside the current deck.
+ *
+ * @param {string} cardID - The card ID to find.
+ * @returns {number} The card index, or -1 when the card is not found.
+ */
 function getCardIndex(cardID) {
   return currentDeck.cards.findIndex((card) => card._id === cardID);
 }
 
+/**
+ * Replaces a card in the current deck with its updated data.
+ *
+ * @param {object} updatedCard - The updated card returned by the API.
+ * @param {string} updatedCard._id - The ID of the card to replace.
+ * @returns {void}
+ */
 function replaceDeckCard(updatedCard) {
   const cardIndex = getCardIndex(updatedCard._id);
 
@@ -54,11 +78,22 @@ function replaceDeckCard(updatedCard) {
   }
 }
 
+/**
+ * Removes document listeners used by the active card editor.
+ *
+ * @returns {void}
+ */
 function clearActiveEditorListeners() {
   document.removeEventListener("keydown", handleEditorEscClose);
   document.removeEventListener("mousedown", handleEditorOutsideClick);
 }
 
+/**
+ * Sets the active card editor and attaches its close listeners.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {void}
+ */
 function setActiveEditor(editor) {
   clearActiveEditorListeners();
   activeEditor = editor;
@@ -66,11 +101,25 @@ function setActiveEditor(editor) {
   document.addEventListener("mousedown", handleEditorOutsideClick);
 }
 
+/**
+ * Clears the active card editor and removes its close listeners.
+ *
+ * @returns {void}
+ */
 function clearActiveEditor() {
   clearActiveEditorListeners();
   activeEditor = null;
 }
 
+/**
+ * Opens the confirmation modal used before discarding unsaved card changes.
+ *
+ * @param {object} options - The discard modal options.
+ * @param {string} options.title - The modal title.
+ * @param {string} options.message - The modal message.
+ * @param {Function} options.onConfirm - The callback to run when discard is confirmed.
+ * @returns {void}
+ */
 function openDiscardModal({ title, message, onConfirm }) {
   openConfirmationModal({
     title,
@@ -81,6 +130,12 @@ function openDiscardModal({ title, message, onConfirm }) {
   });
 }
 
+/**
+ * Focuses the field for the editor's active side.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {void}
+ */
 function focusActiveField(editor) {
   const activeField = editor.el.querySelector(
     `.card__field_type_${editor.side}`,
@@ -89,6 +144,12 @@ function focusActiveField(editor) {
   activeField.focus();
 }
 
+/**
+ * Copies the active field's current value into editor state.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {void}
+ */
 function syncEditorValue(editor) {
   const activeField = editor.el.querySelector(
     `.card__field_type_${editor.side}`,
@@ -97,6 +158,13 @@ function syncEditorValue(editor) {
   editor.values[editor.side] = activeField.value;
 }
 
+/**
+ * Switches the form card between question and answer editing sides.
+ *
+ * @param {object} editor - The card editor state object.
+ * @param {string} side - The side to show, either question or answer.
+ * @returns {void}
+ */
 function updateFormSide(editor, side) {
   editor.side = side;
   editor.el.classList.toggle(
@@ -118,6 +186,12 @@ function updateFormSide(editor, side) {
   updateSaveButton(editor);
 }
 
+/**
+ * Enables or disables the save button for the editor's active side.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {void}
+ */
 function updateSaveButton(editor) {
   const saveBtn = editor.el.querySelector(".card__save-btn");
   const currentValue = editor.values[editor.side].trim();
@@ -130,6 +204,12 @@ function updateSaveButton(editor) {
   saveBtn.disabled = false;
 }
 
+/**
+ * Creates and wires a form card element for adding or editing a card.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {HTMLElement} The configured form card element.
+ */
 function createFormCardEl(editor) {
   const formCardEl = flashcardFormTemplateEl.content
     .querySelector(".card")
@@ -188,6 +268,16 @@ function createFormCardEl(editor) {
   return formCardEl;
 }
 
+/**
+ * Creates a saved card element with flip, edit, and delete behavior.
+ *
+ * @param {object} cardData - The saved card data to render.
+ * @param {string} cardData._id - The card ID.
+ * @param {string} cardData.question - The card question text.
+ * @param {string} cardData.answer - The card answer text.
+ * @param {string} [initialSide=sideNames.question] - The side to show first.
+ * @returns {HTMLElement} The configured saved card element.
+ */
 function createSavedCardEl(cardData, initialSide = sideNames.question) {
   const flashcardEl = flashcardTemplateEl.content
     .querySelector(".card")
@@ -201,6 +291,11 @@ function createSavedCardEl(cardData, initialSide = sideNames.question) {
 
   const flipBtn = flashcardEl.querySelector(".card__flip-btn");
 
+  /**
+   * Updates the saved card text and visual side.
+   *
+   * @returns {void}
+   */
   function updateDisplay() {
     if (showingQuestion) {
       flashcardTextEl.textContent = cardData.question;
@@ -248,11 +343,23 @@ function createSavedCardEl(cardData, initialSide = sideNames.question) {
   return flashcardEl;
 }
 
+/**
+ * Renders one saved card into the deck view list.
+ *
+ * @param {object} cardData - The saved card data to render.
+ * @param {string} [initialSide=sideNames.question] - The side to show first.
+ * @returns {void}
+ */
 function renderSavedCard(cardData, initialSide = sideNames.question) {
   const flashcardEl = createSavedCardEl(cardData, initialSide);
   flashcardContainerEl.append(flashcardEl);
 }
 
+/**
+ * Opens a blank form card for creating a new card.
+ *
+ * @returns {void}
+ */
 function openNewCardForm() {
   if (activeEditor) {
     attemptCloseActiveEditor();
@@ -274,6 +381,14 @@ function openNewCardForm() {
   focusActiveField(editor);
 }
 
+/**
+ * Replaces a saved card with an edit form for that card.
+ *
+ * @param {object} cardData - The saved card data to edit.
+ * @param {HTMLElement} savedCardEl - The saved card element being replaced.
+ * @param {boolean} showingQuestion - Whether the saved card is currently showing its question side.
+ * @returns {void}
+ */
 function openEditCardForm(cardData, savedCardEl, showingQuestion) {
   if (activeEditor) {
     attemptCloseActiveEditor();
@@ -306,6 +421,12 @@ function openEditCardForm(cardData, savedCardEl, showingQuestion) {
   focusActiveField(editor);
 }
 
+/**
+ * Handles a form card save attempt for either a new or existing card.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {void}
+ */
 function handleFormSave(editor) {
   syncEditorValue(editor);
 
@@ -322,6 +443,12 @@ function handleFormSave(editor) {
   handleEditCardSave(editor);
 }
 
+/**
+ * Saves each side of a new card and posts the card after both sides are confirmed.
+ *
+ * @param {object} editor - The new card editor state object.
+ * @returns {void}
+ */
 function handleNewCardSideSave(editor) {
   editor.confirmed[editor.side] = true;
 
@@ -358,6 +485,12 @@ function handleNewCardSideSave(editor) {
     });
 }
 
+/**
+ * Sends edited card values to the API and renders the updated saved card.
+ *
+ * @param {object} editor - The edit card editor state object.
+ * @returns {void}
+ */
 function handleEditCardSave(editor) {
   const updatedValues = {
     question: editor.values.question.trim(),
@@ -380,18 +513,36 @@ function handleEditCardSave(editor) {
     });
 }
 
+/**
+ * Restores the original saved card element after canceling an edit.
+ *
+ * @param {object} editor - The edit card editor state object.
+ * @returns {void}
+ */
 function restoreEditedCard(editor) {
   const savedCardEl = createSavedCardEl(editor.cardData, editor.side);
   editor.el.replaceWith(savedCardEl);
   clearActiveEditor();
 }
 
+/**
+ * Removes an unsaved new card form and restores the new card button.
+ *
+ * @param {object} editor - The new card editor state object.
+ * @returns {void}
+ */
 function cancelNewCard(editor) {
   editor.el.remove();
   newCardBtn.hidden = false;
   clearActiveEditor();
 }
 
+/**
+ * Checks whether an edited card has unsaved changes.
+ *
+ * @param {object} editor - The edit card editor state object.
+ * @returns {boolean} True when the current values differ from the original values.
+ */
 function hasEditChanges(editor) {
   syncEditorValue(editor);
 
@@ -401,6 +552,12 @@ function hasEditChanges(editor) {
   );
 }
 
+/**
+ * Checks whether a new card form has any draft text.
+ *
+ * @param {object} editor - The new card editor state object.
+ * @returns {boolean} True when either side of the new card contains text.
+ */
 function hasNewCardDraft(editor) {
   syncEditorValue(editor);
 
@@ -410,6 +567,11 @@ function hasNewCardDraft(editor) {
   );
 }
 
+/**
+ * Attempts to close the active editor, asking for confirmation when needed.
+ *
+ * @returns {void}
+ */
 function attemptCloseActiveEditor() {
   if (!activeEditor) {
     return;
@@ -445,6 +607,12 @@ function attemptCloseActiveEditor() {
   });
 }
 
+/**
+ * Attempts to close the active editor when Escape is pressed.
+ *
+ * @param {KeyboardEvent} evt - The keydown event.
+ * @returns {void}
+ */
 function handleEditorEscClose(evt) {
   if (modalEl.classList.contains("modal_visible")) {
     return;
@@ -457,6 +625,12 @@ function handleEditorEscClose(evt) {
   attemptCloseActiveEditor();
 }
 
+/**
+ * Attempts to close the active editor after a click outside the editor.
+ *
+ * @param {MouseEvent} evt - The mousedown event.
+ * @returns {void}
+ */
 function handleEditorOutsideClick(evt) {
   if (modalEl.classList.contains("modal_visible")) {
     return;
@@ -477,6 +651,14 @@ practiceBtn.addEventListener("click", () => {
 
 newCardBtn.addEventListener("click", openNewCardForm);
 
+/**
+ * Renders the deck detail view for one deck.
+ *
+ * @param {object} deck - The deck to render.
+ * @param {string} deck.name - The deck name.
+ * @param {Array<object>} deck.cards - The deck's cards.
+ * @returns {void}
+ */
 function renderDeckView(deck) {
   clearActiveEditor();
   currentDeck = deck;
