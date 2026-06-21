@@ -202,7 +202,7 @@ The app is still a learning project, so there are a few limitations:
 
 ## Future Improvements
 
-Future improvements I would like to add include:
+This project started as a flashcard viewer, but I see it evolving into a more active learning tool. Future improvements I am exploring include:
 
 - Add full validation for each card object in a new deck
 - Add editing for deck names and deck colors
@@ -211,6 +211,12 @@ Future improvements I would like to add include:
 - Improve the new deck form with clearer placeholder JSON
 - Add more flashcard topics
 - Add tests for JavaScript helper functions and API-related behavior
+- Research a quiz mode with formal scoring and progress feedback
+- Explore a memorization mode based on the First Letter Method
+- Investigate AI-assisted deck generation from user-provided study notes
+- Explore a hybrid AI chatbot that can help users study, ask follow-up questions, and generate more complex flashcard decks
+
+Long term, I would like Flash Cards to become more than a deck viewer. My goal is to keep developing it toward a learning hub that can help users create study materials, practice actively, check their understanding, and receive guided support while they learn.
 
 ## Running the Project Locally
 
