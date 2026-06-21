@@ -43,4 +43,20 @@ function deleteCard(id) {
   }).then(processResponse);
 }
 
-export { getDecks, deleteDeck, addDeck, deleteCard };
+function addCard(deckID, { question, answer }) {
+  return fetch(`${cardsUrl}/${deckID}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ question, answer }),
+  }).then(processResponse);
+}
+
+function editCard(cardID, { question, answer }) {
+  return fetch(`${cardsUrl}/${cardID}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ question, answer }),
+  }).then(processResponse);
+}
+
+export { getDecks, deleteDeck, addDeck, deleteCard, addCard, editCard };

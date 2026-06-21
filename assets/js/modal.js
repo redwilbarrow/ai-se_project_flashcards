@@ -60,9 +60,21 @@ function showError(message) {
 
 function openConfirmationModal(itemType, onConfirm) {
   modalTitle.classList.remove("modal__title_type_error");
-  modalTitle.textContent = `Are you sure you want to delete this ${itemType}`;
+  const options =
+    typeof itemType === "object"
+      ? itemType
+      : {
+          title: `Are you sure you want to delete this ${itemType}`,
+          onConfirm,
+        };
 
-  confirmCallback = onConfirm;
+  modalTitle.textContent = options.title;
+  modalMessage.textContent = options.message || "";
+  modalMessage.classList.toggle("modal__message_hidden", !options.message);
+  confirmBtn.textContent = options.confirmText || "Delete";
+  cancelBtn.textContent = options.cancelText || "Cancel";
+
+  confirmCallback = options.onConfirm;
   openModal();
 }
 

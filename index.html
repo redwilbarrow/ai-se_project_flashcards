@@ -247,12 +247,51 @@
               aria-label="Flip this Card"
               class="card__flip-btn"
             ></button>
-            <button
-              type="button"
-              aria-label="Delete this deck"
-              class="card__delete-btn"
-            ></button>
+            <div class="card__actions">
+              <button
+                type="button"
+                aria-label="Edit this card"
+                class="card__edit-btn"
+              ></button>
+              <button
+                type="button"
+                aria-label="Delete this card"
+                class="card__delete-btn"
+              ></button>
+            </div>
           </div>
+        </li>
+      </template>
+
+      <!-- Flashcard Form Template -->
+      <template id="flashcard-form-template">
+        <li class="card card_color_green card_state_question-editing">
+          <form class="card__form" novalidate>
+            <textarea
+              class="card__field card__field_type_question"
+              aria-label="Card question"
+              placeholder="Type the question or term"
+              required
+            ></textarea>
+            <textarea
+              class="card__field card__field_type_answer card__field_hidden"
+              aria-label="Card answer"
+              placeholder="Type the answer or definition"
+            ></textarea>
+            <div class="card__row">
+              <button
+                type="button"
+                aria-label="Flip this Card"
+                class="card__flip-btn"
+              ></button>
+              <button
+                type="submit"
+                aria-label="Save this card side"
+                class="card__save-btn"
+                disabled
+              ></button>
+            </div>
+          </form>
         </li>
       </template>
 
