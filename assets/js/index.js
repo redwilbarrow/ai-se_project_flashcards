@@ -101,7 +101,7 @@ function createDeckEl(deck) {
           deckEl.remove();
 
           const deckIndex = fetchedDecks.findIndex(
-            (fetchedDeck) => fetchedDeck === deck._id,
+            (fetchedDeck) => fetchedDeck._id === deck._id,
           );
 
           if (deckIndex !== -1) {
