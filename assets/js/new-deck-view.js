@@ -10,6 +10,42 @@ const DEFAULT_DECK_COLOR = "#64d583";
 const HEX_DIGITS = /^[0-9a-fA-F]{6}$/;
 
 /**
+ * Checks whether a value is a string with non-whitespace text.
+ *
+ * @param {*} value - The value to validate.
+ * @returns {boolean} True when the value has text after trimming whitespace.
+ */
+function hasText(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+/**
+ * Validates and trims imported card data.
+ *
+ * @param {*} cards - The value to validate as the deck's cards array.
+ * @returns {Array<object>|null} The trimmed cards, or null when any card is invalid.
+ */
+function validateCards(cards) {
+  if (!Array.isArray(cards)) {
+    return null;
+  }
+
+  const trimmedCards = cards.map((card) => {
+    if (!card || !hasText(card.question) || !hasText(card.answer)) {
+      return null;
+    }
+
+    return {
+      ...card,
+      question: card.question.trim(),
+      answer: card.answer.trim(),
+    };
+  });
+
+  return trimmedCards.includes(null) ? null : trimmedCards;
+}
+
+/**
  * Enables the new deck submit button when the new deck view opens.
  *
  * @returns {void}
@@ -62,8 +98,9 @@ function newCardSubmitHandler(evt) {
     return;
   }
 
-  if (!Array.isArray(jsonData.cards)) {
-    showError("Cards must be an array.");
+  const cards = validateCards(jsonData.cards);
+  if (cards === null) {
+    showError("Cards must be an array of cards with question and answer text.");
     return;
   }
 
@@ -87,7 +124,7 @@ function newCardSubmitHandler(evt) {
   const newDeck = {
     color: deckColor,
     name: name,
-    cards: jsonData.cards,
+    cards: cards,
   };
 
   addDeck(newDeck)

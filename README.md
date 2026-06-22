@@ -61,6 +61,7 @@ The app currently checks that:
 - the JSON syntax is valid
 - the deck name is a string between 2 and 80 characters
 - the cards value is an array
+- every card has non-empty question and answer text
 - the optional JSON color is a string
 - the optional JSON color matches the selected color
 
@@ -194,7 +195,7 @@ I also practiced working with asynchronous code. Since the app gets, creates, ed
 
 The app is still a learning project, so there are a few limitations:
 
-- New deck card objects are not fully validated yet.
+- New deck card objects have basic required-field validation, but nested or extra fields are not fully validated yet.
 - Users can add and edit cards, but there is not yet a full deck editing form.
 - Keyboard support for studying cards can be improved.
 - API errors are shown to the user, but there is not yet a loading state for every request.
@@ -204,7 +205,7 @@ The app is still a learning project, so there are a few limitations:
 
 This project started as a flashcard viewer, but I see it evolving into a more active learning tool. Future improvements I am exploring include:
 
-- Add full validation for each card object in a new deck
+- Add deeper validation for each card object in a new deck
 - Add editing for deck names and deck colors
 - Add keyboard controls for carousel practice
 - Add loading states during API requests

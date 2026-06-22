@@ -145,7 +145,7 @@ function focusActiveField(editor) {
 }
 
 /**
- * Copies the active field's current value into editor state.
+ * Copies the active field's current value into editor state so drafts survive flips.
  *
  * @param {object} editor - The card editor state object.
  * @returns {void}
@@ -156,6 +156,52 @@ function syncEditorValue(editor) {
   );
 
   editor.values[editor.side] = activeField.value;
+}
+
+/**
+ * Returns one editor side value trimmed for validation and API requests.
+ *
+ * @param {object} editor - The card editor state object.
+ * @param {string} side - The side to read, either question or answer.
+ * @returns {string} The trimmed value for the requested side.
+ */
+function getTrimmedSideValue(editor, side) {
+  return String(editor.values[side] ?? "").trim();
+}
+
+/**
+ * Checks whether the editor's active side has required non-whitespace text.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {boolean} True when the active question or answer side can be confirmed.
+ */
+function hasActiveSideText(editor) {
+  return getTrimmedSideValue(editor, editor.side).length > 0;
+}
+
+/**
+ * Returns the editor values trimmed for API requests.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {{question: string, answer: string}} The trimmed question and answer values.
+ */
+function getTrimmedEditorValues(editor) {
+  return {
+    question: getTrimmedSideValue(editor, sideNames.question),
+    answer: getTrimmedSideValue(editor, sideNames.answer),
+  };
+}
+
+/**
+ * Checks whether both sides of an editor have required non-whitespace text.
+ *
+ * @param {object} editor - The card editor state object.
+ * @returns {boolean} True when both question and answer can be saved to the API.
+ */
+function hasRequiredCardText(editor) {
+  const values = getTrimmedEditorValues(editor);
+
+  return values.question.length > 0 && values.answer.length > 0;
 }
 
 /**
@@ -181,7 +227,6 @@ function updateFormSide(editor, side) {
   const answerField = editor.el.querySelector(".card__field_type_answer");
   questionField.value = editor.values.question;
   answerField.value = editor.values.answer;
-  answerField.placeholder = editor.answerPlaceholder;
 
   updateSaveButton(editor);
 }
@@ -194,14 +239,7 @@ function updateFormSide(editor, side) {
  */
 function updateSaveButton(editor) {
   const saveBtn = editor.el.querySelector(".card__save-btn");
-  const currentValue = editor.values[editor.side].trim();
-
-  if (editor.side === sideNames.question) {
-    saveBtn.disabled = currentValue.length === 0;
-    return;
-  }
-
-  saveBtn.disabled = false;
+  saveBtn.disabled = !hasActiveSideText(editor);
 }
 
 /**
@@ -231,7 +269,7 @@ function createFormCardEl(editor) {
   questionField.value = editor.values.question;
   answerField.value = editor.values.answer;
   questionField.placeholder = "Type the question or term";
-  answerField.placeholder = editor.answerPlaceholder;
+  answerField.placeholder = "Type the answer or definition";
 
   questionField.addEventListener("input", () => {
     editor.values.question = questionField.value;
@@ -242,8 +280,6 @@ function createFormCardEl(editor) {
   answerField.addEventListener("input", () => {
     editor.values.answer = answerField.value;
     editor.confirmed.answer = false;
-    editor.answerPlaceholder = "Type the answer or definition";
-    answerField.placeholder = editor.answerPlaceholder;
     updateSaveButton(editor);
   });
 
@@ -371,7 +407,6 @@ function openNewCardForm() {
     side: sideNames.question,
     values: { question: "", answer: "" },
     confirmed: { question: false, answer: false },
-    answerPlaceholder: "Type the answer or definition",
   };
 
   const formCardEl = createFormCardEl(editor);
@@ -403,16 +438,13 @@ function openEditCardForm(cardData, savedCardEl, showingQuestion) {
     savedCardEl,
     values: {
       question: cardData.question,
-      answer: cardData.answer || "",
+      answer: cardData.answer,
     },
     confirmed: { question: false, answer: false },
     originalValues: {
       question: cardData.question,
-      answer: cardData.answer || "",
+      answer: cardData.answer,
     },
-    answerPlaceholder: cardData.answer
-      ? "Type the answer or definition"
-      : "No answer provided",
   };
 
   const formCardEl = createFormCardEl(editor);
@@ -430,7 +462,7 @@ function openEditCardForm(cardData, savedCardEl, showingQuestion) {
 function handleFormSave(editor) {
   syncEditorValue(editor);
 
-  if (editor.side === sideNames.question && !editor.values.question.trim()) {
+  if (!hasActiveSideText(editor)) {
     updateSaveButton(editor);
     return;
   }
@@ -444,17 +476,14 @@ function handleFormSave(editor) {
 }
 
 /**
- * Saves each side of a new card and posts the card after both sides are confirmed.
+ * Confirms each required side of a new card and posts after both sides are confirmed.
+ * Flipping to the other side is allowed before either side is filled in.
  *
  * @param {object} editor - The new card editor state object.
  * @returns {void}
  */
 function handleNewCardSideSave(editor) {
   editor.confirmed[editor.side] = true;
-
-  if (editor.side === sideNames.answer && !editor.values.answer) {
-    editor.answerPlaceholder = "No answer was provided";
-  }
 
   const otherSide =
     editor.side === sideNames.question ? sideNames.answer : sideNames.question;
@@ -465,13 +494,15 @@ function handleNewCardSideSave(editor) {
     return;
   }
 
+  if (!hasRequiredCardText(editor)) {
+    updateSaveButton(editor);
+    return;
+  }
+
   const saveBtn = editor.el.querySelector(".card__save-btn");
   saveBtn.disabled = true;
 
-  addCard(currentDeck._id, {
-    question: editor.values.question.trim(),
-    answer: editor.values.answer,
-  })
+  addCard(currentDeck._id, getTrimmedEditorValues(editor))
     .then((newCard) => {
       currentDeck.cards.push(newCard);
       const savedCardEl = createSavedCardEl(newCard);
@@ -486,16 +517,18 @@ function handleNewCardSideSave(editor) {
 }
 
 /**
- * Sends edited card values to the API and renders the updated saved card.
+ * Sends required edited card values to the API and renders the updated saved card.
  *
  * @param {object} editor - The edit card editor state object.
  * @returns {void}
  */
 function handleEditCardSave(editor) {
-  const updatedValues = {
-    question: editor.values.question.trim(),
-    answer: editor.values.answer,
-  };
+  if (!hasRequiredCardText(editor)) {
+    updateSaveButton(editor);
+    return;
+  }
+
+  const updatedValues = getTrimmedEditorValues(editor);
   const saveBtn = editor.el.querySelector(".card__save-btn");
   saveBtn.disabled = true;
 
@@ -547,8 +580,8 @@ function hasEditChanges(editor) {
   syncEditorValue(editor);
 
   return (
-    editor.values.question !== editor.originalValues.question ||
-    editor.values.answer !== editor.originalValues.answer
+    editor.values.question.trim() !== editor.originalValues.question.trim() ||
+    editor.values.answer.trim() !== editor.originalValues.answer.trim()
   );
 }
 
