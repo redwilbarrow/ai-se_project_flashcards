@@ -233,7 +233,7 @@ One simple option is the Live Server extension in VS Code:
 
 ## Project Pitch Video
 
-Check out [this video](https://drive.google.com/file/d/1SD6kdLz23dkbx98MdCP2n3ZD2tIzIIrC/view?usp=sharing), where I describe my project and some challenges I faced while building it.
+Check out [this video](https://drive.google.com/file/d/1xprz_-_nWfp-NYrsnpYEEPkPsFh3l-xQ/view?usp=sharing), where I describe my project and some challenges I faced while building it.
 
 ## Author
 
