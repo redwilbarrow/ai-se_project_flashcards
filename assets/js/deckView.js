@@ -27,6 +27,33 @@ const sideNames = {
 };
 
 /**
+ * @typedef {"question"|"answer"} CardSide
+ */
+
+/**
+ * @typedef {object} CardValues
+ * @property {string} question - The card question text.
+ * @property {string} answer - The card answer text.
+ */
+
+/**
+ * @typedef {object} CardConfirmationState
+ * @property {boolean} question - Whether the question side has been confirmed.
+ * @property {boolean} answer - Whether the answer side has been confirmed.
+ */
+
+/**
+ * @typedef {object} CardEditor
+ * @property {"new"|"edit"} mode - Whether the editor is creating or editing a card.
+ * @property {CardSide} side - The currently visible side of the editor.
+ * @property {CardValues} values - The current draft question and answer values.
+ * @property {CardConfirmationState} confirmed - Whether each side has been confirmed.
+ * @property {HTMLElement} el - The rendered editor card element.
+ * @property {object} [cardData] - The saved card data, only used in edit mode.
+ * @property {CardValues} [originalValues] - The original saved values, only used in edit mode.
+ */
+
+/**
  * Builds the card color class for the current deck.
  *
  * @returns {string|null} The card color modifier class, or null for the default color.
@@ -91,7 +118,7 @@ function clearActiveEditorListeners() {
 /**
  * Sets the active card editor and attaches its close listeners.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {void}
  */
 function setActiveEditor(editor) {
@@ -117,7 +144,7 @@ function clearActiveEditor() {
  * @param {object} options - The discard modal options.
  * @param {string} options.title - The modal title.
  * @param {string} options.message - The modal message.
- * @param {Function} options.onConfirm - The callback to run when discard is confirmed.
+ * @param {() => void} options.onConfirm - The callback to run when discard is confirmed.
  * @returns {void}
  */
 function openDiscardModal({ title, message, onConfirm }) {
@@ -133,7 +160,7 @@ function openDiscardModal({ title, message, onConfirm }) {
 /**
  * Focuses the field for the editor's active side.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {void}
  */
 function focusActiveField(editor) {
@@ -147,7 +174,7 @@ function focusActiveField(editor) {
 /**
  * Copies the active field's current value into editor state so drafts survive flips.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {void}
  */
 function syncEditorValue(editor) {
@@ -161,8 +188,8 @@ function syncEditorValue(editor) {
 /**
  * Returns one editor side value trimmed for validation and API requests.
  *
- * @param {object} editor - The card editor state object.
- * @param {string} side - The side to read, either question or answer.
+ * @param {CardEditor} editor - The card editor state object.
+ * @param {CardSide} side - The side to read.
  * @returns {string} The trimmed value for the requested side.
  */
 function getTrimmedSideValue(editor, side) {
@@ -172,7 +199,7 @@ function getTrimmedSideValue(editor, side) {
 /**
  * Checks whether the editor's active side has required non-whitespace text.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {boolean} True when the active question or answer side can be confirmed.
  */
 function hasActiveSideText(editor) {
@@ -182,8 +209,8 @@ function hasActiveSideText(editor) {
 /**
  * Returns the editor values trimmed for API requests.
  *
- * @param {object} editor - The card editor state object.
- * @returns {{question: string, answer: string}} The trimmed question and answer values.
+ * @param {CardEditor} editor - The card editor state object.
+ * @returns {CardValues} The trimmed question and answer values.
  */
 function getTrimmedEditorValues(editor) {
   return {
@@ -195,7 +222,7 @@ function getTrimmedEditorValues(editor) {
 /**
  * Checks whether both sides of an editor have required non-whitespace text.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {boolean} True when both question and answer can be saved to the API.
  */
 function hasRequiredCardText(editor) {
@@ -207,8 +234,8 @@ function hasRequiredCardText(editor) {
 /**
  * Switches the form card between question and answer editing sides.
  *
- * @param {object} editor - The card editor state object.
- * @param {string} side - The side to show, either question or answer.
+ * @param {CardEditor} editor - The card editor state object.
+ * @param {CardSide} side - The side to show.
  * @returns {void}
  */
 function updateFormSide(editor, side) {
@@ -234,7 +261,7 @@ function updateFormSide(editor, side) {
 /**
  * Enables or disables the save button for the editor's active side.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {void}
  */
 function updateSaveButton(editor) {
@@ -245,7 +272,7 @@ function updateSaveButton(editor) {
 /**
  * Creates and wires a form card element for adding or editing a card.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {HTMLElement} The configured form card element.
  */
 function createFormCardEl(editor) {
@@ -311,7 +338,7 @@ function createFormCardEl(editor) {
  * @param {string} cardData._id - The card ID.
  * @param {string} cardData.question - The card question text.
  * @param {string} cardData.answer - The card answer text.
- * @param {string} [initialSide=sideNames.question] - The side to show first.
+ * @param {CardSide} [initialSide=sideNames.question] - The side to show first.
  * @returns {HTMLElement} The configured saved card element.
  */
 function createSavedCardEl(cardData, initialSide = sideNames.question) {
@@ -383,7 +410,7 @@ function createSavedCardEl(cardData, initialSide = sideNames.question) {
  * Renders one saved card into the deck view list.
  *
  * @param {object} cardData - The saved card data to render.
- * @param {string} [initialSide=sideNames.question] - The side to show first.
+ * @param {CardSide} [initialSide=sideNames.question] - The side to show first.
  * @returns {void}
  */
 function renderSavedCard(cardData, initialSide = sideNames.question) {
@@ -456,7 +483,7 @@ function openEditCardForm(cardData, savedCardEl, showingQuestion) {
 /**
  * Handles a form card save attempt for either a new or existing card.
  *
- * @param {object} editor - The card editor state object.
+ * @param {CardEditor} editor - The card editor state object.
  * @returns {void}
  */
 function handleFormSave(editor) {
@@ -479,7 +506,7 @@ function handleFormSave(editor) {
  * Confirms each required side of a new card and posts after both sides are confirmed.
  * Flipping to the other side is allowed before either side is filled in.
  *
- * @param {object} editor - The new card editor state object.
+ * @param {CardEditor} editor - The new card editor state object.
  * @returns {void}
  */
 function handleNewCardSideSave(editor) {
@@ -519,7 +546,7 @@ function handleNewCardSideSave(editor) {
 /**
  * Sends required edited card values to the API and renders the updated saved card.
  *
- * @param {object} editor - The edit card editor state object.
+ * @param {CardEditor} editor - The edit card editor state object.
  * @returns {void}
  */
 function handleEditCardSave(editor) {
@@ -549,7 +576,7 @@ function handleEditCardSave(editor) {
 /**
  * Restores the original saved card element after canceling an edit.
  *
- * @param {object} editor - The edit card editor state object.
+ * @param {CardEditor} editor - The edit card editor state object.
  * @returns {void}
  */
 function restoreEditedCard(editor) {
@@ -561,7 +588,7 @@ function restoreEditedCard(editor) {
 /**
  * Removes an unsaved new card form and restores the new card button.
  *
- * @param {object} editor - The new card editor state object.
+ * @param {CardEditor} editor - The new card editor state object.
  * @returns {void}
  */
 function cancelNewCard(editor) {
@@ -573,7 +600,7 @@ function cancelNewCard(editor) {
 /**
  * Checks whether an edited card has unsaved changes.
  *
- * @param {object} editor - The edit card editor state object.
+ * @param {CardEditor} editor - The edit card editor state object.
  * @returns {boolean} True when the current values differ from the original values.
  */
 function hasEditChanges(editor) {
@@ -586,10 +613,10 @@ function hasEditChanges(editor) {
 }
 
 /**
- * Checks whether a new card form has any draft text.
+ * Checks whether a new card form has any non-whitespace draft text.
  *
- * @param {object} editor - The new card editor state object.
- * @returns {boolean} True when either side of the new card contains text.
+ * @param {CardEditor} editor - The new card editor state object.
+ * @returns {boolean} True when either side of the new card contains non-whitespace text.
  */
 function hasNewCardDraft(editor) {
   syncEditorValue(editor);
