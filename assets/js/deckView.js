@@ -1,56 +1,31 @@
 import { hexToString, removeColorClasses } from "./colorMap.js";
 import { openConfirmationModal, showError } from "./modal.js";
 import { addCard, deleteCard, editCard } from "./api.js";
+import {
+  clearCardEditor,
+  openEditCardEditor,
+  openNewCardEditor,
+  sideNames,
+} from "./cardEditor.js";
 
 const deckViewSection = document.querySelector("#deck-view");
 const deckTitleEl = deckViewSection.querySelector(".gallery__title");
 const practiceBtn = deckViewSection.querySelector(".gallery__practice-btn");
 const flashcardTemplateEl = document.querySelector("#flashcard-template");
-const flashcardFormTemplateEl = document.querySelector(
-  "#flashcard-form-template",
-);
 const flashcardContainerEl = deckViewSection.querySelector(".gallery__list");
-const galleryWrapperEl = deckViewSection.querySelector(
-  ".gallery__grid-wrapper",
-);
 const newCardBtn = deckViewSection.querySelector(
   ".gallery__new-card-btn_location_deck-view",
 );
 const modalEl = document.querySelector("#modal");
 
 let currentDeck = null;
-let activeEditor = null;
-
-const sideNames = {
-  question: "question",
-  answer: "answer",
-};
 
 /**
- * @typedef {"question"|"answer"} CardSide
+ * @typedef {import("./cardEditor.js").CardSide} CardSide
  */
 
 /**
- * @typedef {object} CardValues
- * @property {string} question - The card question text.
- * @property {string} answer - The card answer text.
- */
-
-/**
- * @typedef {object} CardConfirmationState
- * @property {boolean} question - Whether the question side has been confirmed.
- * @property {boolean} answer - Whether the answer side has been confirmed.
- */
-
-/**
- * @typedef {object} CardEditor
- * @property {"new"|"edit"} mode - Whether the editor is creating or editing a card.
- * @property {CardSide} side - The currently visible side of the editor.
- * @property {CardValues} values - The current draft question and answer values.
- * @property {CardConfirmationState} confirmed - Whether each side has been confirmed.
- * @property {HTMLElement} el - The rendered editor card element.
- * @property {object} [cardData] - The saved card data, only used in edit mode.
- * @property {CardValues} [originalValues] - The original saved values, only used in edit mode.
+ * @typedef {import("./cardEditor.js").CardValues} CardValues
  */
 
 /**
@@ -106,39 +81,6 @@ function replaceDeckCard(updatedCard) {
 }
 
 /**
- * Removes document listeners used by the active card editor.
- *
- * @returns {void}
- */
-function clearActiveEditorListeners() {
-  document.removeEventListener("keydown", handleEditorEscClose);
-  document.removeEventListener("mousedown", handleEditorOutsideClick);
-}
-
-/**
- * Sets the active card editor and attaches its close listeners.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {void}
- */
-function setActiveEditor(editor) {
-  clearActiveEditorListeners();
-  activeEditor = editor;
-  document.addEventListener("keydown", handleEditorEscClose);
-  document.addEventListener("mousedown", handleEditorOutsideClick);
-}
-
-/**
- * Clears the active card editor and removes its close listeners.
- *
- * @returns {void}
- */
-function clearActiveEditor() {
-  clearActiveEditorListeners();
-  activeEditor = null;
-}
-
-/**
  * Opens the confirmation modal used before discarding unsaved card changes.
  *
  * @param {object} options - The discard modal options.
@@ -158,177 +100,41 @@ function openDiscardModal({ title, message, onConfirm }) {
 }
 
 /**
- * Focuses the field for the editor's active side.
+ * Checks whether the reusable modal is currently visible.
  *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {void}
+ * @returns {boolean} True when the modal is visible.
  */
-function focusActiveField(editor) {
-  const activeField = editor.el.querySelector(
-    `.card__field_type_${editor.side}`,
-  );
-
-  activeField.focus();
+function isModalOpen() {
+  return modalEl.classList.contains("modal_visible");
 }
 
 /**
- * Copies the active field's current value into editor state so drafts survive flips.
+ * Saves a new card through the API and stores it in the current deck.
  *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {void}
+ * @param {CardValues} values - The card values to save.
+ * @returns {Promise<object>} The saved card returned by the API.
  */
-function syncEditorValue(editor) {
-  const activeField = editor.el.querySelector(
-    `.card__field_type_${editor.side}`,
-  );
-
-  editor.values[editor.side] = activeField.value;
-}
-
-/**
- * Returns one editor side value trimmed for validation and API requests.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @param {CardSide} side - The side to read.
- * @returns {string} The trimmed value for the requested side.
- */
-function getTrimmedSideValue(editor, side) {
-  return String(editor.values[side] ?? "").trim();
-}
-
-/**
- * Checks whether the editor's active side has required non-whitespace text.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {boolean} True when the active question or answer side can be confirmed.
- */
-function hasActiveSideText(editor) {
-  return getTrimmedSideValue(editor, editor.side).length > 0;
-}
-
-/**
- * Returns the editor values trimmed for API requests.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {CardValues} The trimmed question and answer values.
- */
-function getTrimmedEditorValues(editor) {
-  return {
-    question: getTrimmedSideValue(editor, sideNames.question),
-    answer: getTrimmedSideValue(editor, sideNames.answer),
-  };
-}
-
-/**
- * Checks whether both sides of an editor have required non-whitespace text.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {boolean} True when both question and answer can be saved to the API.
- */
-function hasRequiredCardText(editor) {
-  const values = getTrimmedEditorValues(editor);
-
-  return values.question.length > 0 && values.answer.length > 0;
-}
-
-/**
- * Switches the form card between question and answer editing sides.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @param {CardSide} side - The side to show.
- * @returns {void}
- */
-function updateFormSide(editor, side) {
-  editor.side = side;
-  editor.el.classList.toggle(
-    "card_state_question-editing",
-    side === sideNames.question,
-  );
-  editor.el.classList.toggle(
-    "card_state_answer-editing",
-    side === sideNames.answer,
-  );
-  editor.el.classList.toggle("card_color_white", side === sideNames.answer);
-
-  const questionField = editor.el.querySelector(".card__field_type_question");
-  const answerField = editor.el.querySelector(".card__field_type_answer");
-  questionField.value = editor.values.question;
-  answerField.value = editor.values.answer;
-
-  updateSaveButton(editor);
-}
-
-/**
- * Enables or disables the save button for the editor's active side.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {void}
- */
-function updateSaveButton(editor) {
-  const saveBtn = editor.el.querySelector(".card__save-btn");
-  saveBtn.disabled = !hasActiveSideText(editor);
-}
-
-/**
- * Creates and wires a form card element for adding or editing a card.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {HTMLElement} The configured form card element.
- */
-function createFormCardEl(editor) {
-  const formCardEl = flashcardFormTemplateEl.content
-    .querySelector(".card")
-    .cloneNode(true);
-
-  applyDeckColor(formCardEl);
-  formCardEl.classList.toggle(
-    "card_state_editing-saved",
-    editor.mode === "edit",
-  );
-
-  editor.el = formCardEl;
-
-  const formEl = formCardEl.querySelector(".card__form");
-  const questionField = formCardEl.querySelector(".card__field_type_question");
-  const answerField = formCardEl.querySelector(".card__field_type_answer");
-  const flipBtn = formCardEl.querySelector(".card__flip-btn");
-
-  questionField.value = editor.values.question;
-  answerField.value = editor.values.answer;
-  questionField.placeholder = "Type the question or term";
-  answerField.placeholder = "Type the answer or definition";
-
-  questionField.addEventListener("input", () => {
-    editor.values.question = questionField.value;
-    editor.confirmed.question = false;
-    updateSaveButton(editor);
+function saveNewCard(values) {
+  return addCard(currentDeck._id, values).then((newCard) => {
+    currentDeck.cards.push(newCard);
+    return newCard;
   });
+}
 
-  answerField.addEventListener("input", () => {
-    editor.values.answer = answerField.value;
-    editor.confirmed.answer = false;
-    updateSaveButton(editor);
+/**
+ * Saves edited card values through the API and updates the current deck.
+ *
+ * @param {object} cardData - The saved card data being edited.
+ * @param {string} cardData._id - The ID of the card to edit.
+ * @param {CardValues} values - The updated card values.
+ * @returns {Promise<object>} The updated saved card data.
+ */
+function saveEditedCard(cardData, values) {
+  return editCard(cardData._id, values).then((updatedCard) => {
+    const savedCardData = { ...cardData, ...updatedCard };
+    replaceDeckCard(savedCardData);
+    return savedCardData;
   });
-
-  flipBtn.addEventListener("click", () => {
-    syncEditorValue(editor);
-    updateFormSide(
-      editor,
-      editor.side === sideNames.question
-        ? sideNames.answer
-        : sideNames.question,
-    );
-    focusActiveField(editor);
-  });
-
-  formEl.addEventListener("submit", (evt) => {
-    evt.preventDefault();
-    handleFormSave(editor);
-  });
-
-  updateFormSide(editor, editor.side);
-
-  return formCardEl;
 }
 
 /**
@@ -378,7 +184,17 @@ function createSavedCardEl(cardData, initialSide = sideNames.question) {
 
   const editBtn = flashcardEl.querySelector(".card__edit-btn");
   editBtn.addEventListener("click", () => {
-    openEditCardForm(cardData, flashcardEl, showingQuestion);
+    openEditCardEditor({
+      cardData,
+      savedCardEl: flashcardEl,
+      initialSide: showingQuestion ? sideNames.question : sideNames.answer,
+      applyCardColor: applyDeckColor,
+      createSavedCardEl,
+      saveCard: saveEditedCard,
+      requestDiscard: openDiscardModal,
+      isModalOpen,
+      onError: showError,
+    });
   });
 
   const deleteBtn = flashcardEl.querySelector(".card__delete-btn");
@@ -424,283 +240,21 @@ function renderSavedCard(cardData, initialSide = sideNames.question) {
  * @returns {void}
  */
 function openNewCardForm() {
-  if (activeEditor) {
-    attemptCloseActiveEditor();
-    return;
-  }
-
-  const editor = {
-    mode: "new",
-    side: sideNames.question,
-    values: { question: "", answer: "" },
-    confirmed: { question: false, answer: false },
-  };
-
-  const formCardEl = createFormCardEl(editor);
-  flashcardContainerEl.append(formCardEl);
-  newCardBtn.hidden = true;
-  setActiveEditor(editor);
-  focusActiveField(editor);
-}
-
-/**
- * Replaces a saved card with an edit form for that card.
- *
- * @param {object} cardData - The saved card data to edit.
- * @param {HTMLElement} savedCardEl - The saved card element being replaced.
- * @param {boolean} showingQuestion - Whether the saved card is currently showing its question side.
- * @returns {void}
- */
-function openEditCardForm(cardData, savedCardEl, showingQuestion) {
-  if (activeEditor) {
-    attemptCloseActiveEditor();
-    return;
-  }
-
-  const side = showingQuestion ? sideNames.question : sideNames.answer;
-  const editor = {
-    mode: "edit",
-    side,
-    cardData,
-    savedCardEl,
-    values: {
-      question: cardData.question,
-      answer: cardData.answer,
+  openNewCardEditor({
+    containerEl: flashcardContainerEl,
+    applyCardColor: applyDeckColor,
+    createSavedCardEl,
+    saveCard: saveNewCard,
+    requestDiscard: openDiscardModal,
+    isModalOpen,
+    onOpen: () => {
+      newCardBtn.hidden = true;
     },
-    confirmed: { question: false, answer: false },
-    originalValues: {
-      question: cardData.question,
-      answer: cardData.answer,
-    },
-  };
-
-  const formCardEl = createFormCardEl(editor);
-  savedCardEl.replaceWith(formCardEl);
-  setActiveEditor(editor);
-  focusActiveField(editor);
-}
-
-/**
- * Handles a form card save attempt for either a new or existing card.
- *
- * @param {CardEditor} editor - The card editor state object.
- * @returns {void}
- */
-function handleFormSave(editor) {
-  syncEditorValue(editor);
-
-  if (!hasActiveSideText(editor)) {
-    updateSaveButton(editor);
-    return;
-  }
-
-  if (editor.mode === "new") {
-    handleNewCardSideSave(editor);
-    return;
-  }
-
-  handleEditCardSave(editor);
-}
-
-/**
- * Confirms each required side of a new card and posts after both sides are confirmed.
- * Flipping to the other side is allowed before either side is filled in.
- *
- * @param {CardEditor} editor - The new card editor state object.
- * @returns {void}
- */
-function handleNewCardSideSave(editor) {
-  editor.confirmed[editor.side] = true;
-
-  const otherSide =
-    editor.side === sideNames.question ? sideNames.answer : sideNames.question;
-
-  if (!editor.confirmed[otherSide]) {
-    updateFormSide(editor, otherSide);
-    focusActiveField(editor);
-    return;
-  }
-
-  if (!hasRequiredCardText(editor)) {
-    updateSaveButton(editor);
-    return;
-  }
-
-  const saveBtn = editor.el.querySelector(".card__save-btn");
-  saveBtn.disabled = true;
-
-  addCard(currentDeck._id, getTrimmedEditorValues(editor))
-    .then((newCard) => {
-      currentDeck.cards.push(newCard);
-      const savedCardEl = createSavedCardEl(newCard);
-      editor.el.replaceWith(savedCardEl);
+    onClose: () => {
       newCardBtn.hidden = false;
-      clearActiveEditor();
-    })
-    .catch(() => {
-      updateSaveButton(editor);
-      showError("Error adding card");
-    });
-}
-
-/**
- * Sends required edited card values to the API and renders the updated saved card.
- *
- * @param {CardEditor} editor - The edit card editor state object.
- * @returns {void}
- */
-function handleEditCardSave(editor) {
-  if (!hasRequiredCardText(editor)) {
-    updateSaveButton(editor);
-    return;
-  }
-
-  const updatedValues = getTrimmedEditorValues(editor);
-  const saveBtn = editor.el.querySelector(".card__save-btn");
-  saveBtn.disabled = true;
-
-  editCard(editor.cardData._id, updatedValues)
-    .then((updatedCard) => {
-      const savedCardData = { ...editor.cardData, ...updatedCard };
-      replaceDeckCard(savedCardData);
-      const savedCardEl = createSavedCardEl(savedCardData, editor.side);
-      editor.el.replaceWith(savedCardEl);
-      clearActiveEditor();
-    })
-    .catch(() => {
-      updateSaveButton(editor);
-      showError("Error editing card");
-    });
-}
-
-/**
- * Restores the original saved card element after canceling an edit.
- *
- * @param {CardEditor} editor - The edit card editor state object.
- * @returns {void}
- */
-function restoreEditedCard(editor) {
-  const savedCardEl = createSavedCardEl(editor.cardData, editor.side);
-  editor.el.replaceWith(savedCardEl);
-  clearActiveEditor();
-}
-
-/**
- * Removes an unsaved new card form and restores the new card button.
- *
- * @param {CardEditor} editor - The new card editor state object.
- * @returns {void}
- */
-function cancelNewCard(editor) {
-  editor.el.remove();
-  newCardBtn.hidden = false;
-  clearActiveEditor();
-}
-
-/**
- * Checks whether an edited card has unsaved changes.
- *
- * @param {CardEditor} editor - The edit card editor state object.
- * @returns {boolean} True when the current values differ from the original values.
- */
-function hasEditChanges(editor) {
-  syncEditorValue(editor);
-
-  return (
-    editor.values.question.trim() !== editor.originalValues.question.trim() ||
-    editor.values.answer.trim() !== editor.originalValues.answer.trim()
-  );
-}
-
-/**
- * Checks whether a new card form has any non-whitespace draft text.
- *
- * @param {CardEditor} editor - The new card editor state object.
- * @returns {boolean} True when either side of the new card contains non-whitespace text.
- */
-function hasNewCardDraft(editor) {
-  syncEditorValue(editor);
-
-  return (
-    editor.values.question.trim().length > 0 ||
-    editor.values.answer.trim().length > 0
-  );
-}
-
-/**
- * Attempts to close the active editor, asking for confirmation when needed.
- *
- * @returns {void}
- */
-function attemptCloseActiveEditor() {
-  if (!activeEditor) {
-    return;
-  }
-
-  const editor = activeEditor;
-
-  if (editor.mode === "new") {
-    if (!hasNewCardDraft(editor)) {
-      cancelNewCard(editor);
-      return;
-    }
-
-    openDiscardModal({
-      title: "Cancel new card?",
-      message:
-        "This card has not been saved yet. If you cancel now, the new card will be discarded.",
-      onConfirm: () => cancelNewCard(editor),
-    });
-    return;
-  }
-
-  if (!hasEditChanges(editor)) {
-    restoreEditedCard(editor);
-    return;
-  }
-
-  openDiscardModal({
-    title: "Discard changes?",
-    message:
-      "You have unsaved changes on this card. If you discard them, the card will return to its last saved version.",
-    onConfirm: () => restoreEditedCard(editor),
+    },
+    onError: showError,
   });
-}
-
-/**
- * Attempts to close the active editor when Escape is pressed.
- *
- * @param {KeyboardEvent} evt - The keydown event.
- * @returns {void}
- */
-function handleEditorEscClose(evt) {
-  if (modalEl.classList.contains("modal_visible")) {
-    return;
-  }
-
-  if (evt.key !== "Escape") {
-    return;
-  }
-
-  attemptCloseActiveEditor();
-}
-
-/**
- * Attempts to close the active editor after a click outside the editor.
- *
- * @param {MouseEvent} evt - The mousedown event.
- * @returns {void}
- */
-function handleEditorOutsideClick(evt) {
-  if (modalEl.classList.contains("modal_visible")) {
-    return;
-  }
-
-  if (!activeEditor || activeEditor.el.contains(evt.target)) {
-    return;
-  }
-
-  attemptCloseActiveEditor();
 }
 
 practiceBtn.addEventListener("click", () => {
@@ -720,7 +274,7 @@ newCardBtn.addEventListener("click", openNewCardForm);
  * @returns {void}
  */
 function renderDeckView(deck) {
-  clearActiveEditor();
+  clearCardEditor();
   currentDeck = deck;
   newCardBtn.hidden = false;
 
