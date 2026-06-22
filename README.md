@@ -95,6 +95,7 @@ JavaScript controls which section is visible by adding and removing a hidden sec
 - SVG icon assets
 - Git and GitHub
 - GitHub Pages
+- JSDoc Documentation
 - TripleTen Flashcards API
 
 ## Project Structure
